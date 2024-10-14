@@ -1,6 +1,7 @@
 package com.sparta.trelloproject.domain.notification.entity;
 
 import com.sparta.trelloproject.common.entity.Timestamped;
+import com.sparta.trelloproject.domain.notification.enums.NotificationType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
