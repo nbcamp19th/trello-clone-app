@@ -28,4 +28,6 @@ public class Board extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "workspaces_id")
     private Workspace workspace;
+
+    //test
 }
