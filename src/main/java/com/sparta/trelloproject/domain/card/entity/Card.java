@@ -2,17 +2,14 @@ package com.sparta.trelloproject.domain.card.entity;
 
 import com.sparta.trelloproject.common.entity.Timestamped;
 import com.sparta.trelloproject.domain.list.entity.Lists;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.validation.constraints.NotBlank;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
-@Entity(name = "cards")
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "cards")
 @Getter
 public class Card extends Timestamped {
 
@@ -20,8 +17,9 @@ public class Card extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message="제목은 공백이 될 수 없습니다.")
+    @NotNull
     private String title;
+
     private String contents;
     private LocalDateTime dueDate;
 
