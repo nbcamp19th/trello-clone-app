@@ -1,6 +1,7 @@
 package com.sparta.trelloproject.domain.workspace.service;
 
 import com.sparta.trelloproject.common.annotation.AuthUser;
+import com.sparta.trelloproject.common.exception.ForbiddenException;
 import com.sparta.trelloproject.common.exception.NotFoundException;
 import com.sparta.trelloproject.common.exception.ResponseCode;
 import com.sparta.trelloproject.domain.user.entity.User;
@@ -40,9 +41,14 @@ public class WorkspaceService {
     }
 
     @Transactional
-    public void inviteMemberToWorkspace(WorkspaceInviteRequestDto workspaceInviteRequestDto) {
+    public void inviteMemberToWorkspace(AuthUser authUser , WorkspaceInviteRequestDto workspaceInviteRequestDto) {
         User user = userRepository.findByEmail(workspaceInviteRequestDto.getEmail()).orElseThrow(() -> new NotFoundException(ResponseCode.NOT_FOUND_USER));
         Workspace workspace = workspaceRepository.findById(workspaceInviteRequestDto.getWorkspaceId()).orElseThrow(() -> new NotFoundException(ResponseCode.NOT_FOUND_WORKSPACE));
+
+        UserWorkspace veriUserWorkspace = userWorkSpaceRepository.findByWorkspaceIdAndUserId(workspaceInviteRequestDto.getWorkspaceId() , authUser.getUserId());
+        if (veriUserWorkspace.getWorkSpaceUserRole() != WorkSpaceUserRole.ROLE_WORKSPACE_ADMIN) {
+            throw new ForbiddenException(ResponseCode.FORBIDDEN);
+        }
 
         UserWorkspace userWorkspace = UserWorkspace.from(workspace , user , WorkSpaceUserRole.of(workspaceInviteRequestDto.getWorkspaceUserRole()));
 
@@ -58,6 +64,10 @@ public class WorkspaceService {
     @Transactional
     public void editWorkspace(AuthUser authUser , Long workspaceId , WorkspaceRequestDto workSpaceRequestDto) {
         Workspace workspace = workspaceRepository.findByIdAndUserId(workspaceId , authUser.getUserId()).orElseThrow(() -> new NotFoundException(ResponseCode.NOT_FOUND_WORKSPACE));
+        UserWorkspace userWorkspace = userWorkSpaceRepository.findByWorkspaceIdAndUserId(workspaceId , authUser.getUserId());
+        if (userWorkspace.getWorkSpaceUserRole() != WorkSpaceUserRole.ROLE_WORKSPACE_ADMIN) {
+            throw new ForbiddenException(ResponseCode.FORBIDDEN);
+        }
 
         workspace.update(workSpaceRequestDto.getWorkspaceName() , workSpaceRequestDto.getWorkspaceDescription());
     }
@@ -65,7 +75,12 @@ public class WorkspaceService {
     @Transactional
     public void removeWorkspace(AuthUser authUser ,Long workspaceId) {
         Workspace workspace = workspaceRepository.findByIdAndUserId(workspaceId , authUser.getUserId()).orElseThrow(() -> new NotFoundException(ResponseCode.NOT_FOUND_WORKSPACE));
+        UserWorkspace userWorkspace = userWorkSpaceRepository.findByWorkspaceIdAndUserId(workspaceId , authUser.getUserId());
+        if (userWorkspace.getWorkSpaceUserRole() != WorkSpaceUserRole.ROLE_WORKSPACE_ADMIN) {
+            throw new ForbiddenException(ResponseCode.FORBIDDEN);
+        }
 
+        // TODO : 삭제시 워크스페이스 내의 모든 보드와 데이터가 삭제되는 건 나중으로 cascade 로 사용할 것
         workspaceRepository.delete(workspace);
     }
 }
