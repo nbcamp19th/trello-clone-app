@@ -27,7 +27,7 @@ public class WorkspaceController {
     }
 
     @PostMapping("/invite")
-    public ResponseEntity<SuccessResponse<String>> inviteMemberToWorkspace(@AuthenticationPrincipal AuthUser authUser ,@RequestBody WorkspaceInviteRequestDto workspaceInviteRequestDto) {
+    public ResponseEntity<SuccessResponse<String>> inviteMemberToWorkspace(@AuthenticationPrincipal AuthUser authUser , @RequestBody WorkspaceInviteRequestDto workspaceInviteRequestDto) {
         workspaceService.inviteMemberToWorkspace(authUser , workspaceInviteRequestDto);
         return ResponseEntity.ok(SuccessResponse.of(null));
     }
