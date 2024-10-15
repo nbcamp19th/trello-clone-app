@@ -23,4 +23,13 @@ public class Manager {
     @ManyToOne
     @JoinColumn(name = "cards_id")
     private Card card;
+
+    private Manager(User user, Card card) {
+        this.user = user;
+        this.card = card;
+    }
+
+    public static Manager from(User user, Card card) {
+        return new Manager(user, card);
+    }
 }

@@ -37,7 +37,8 @@ public class Card extends Timestamped {
     }
 
     public static Card from(CardRequestDto cardRequestDto, Lists list) {
-        return new Card(cardRequestDto.getTitle(), cardRequestDto.getContents(), cardRequestDto.getDueDate(), list);
+        return new Card(cardRequestDto.getTitle(), cardRequestDto.getContents(),
+            cardRequestDto.getDueDate(), list);
     }
 
     public void update(CardRequestDto cardRequestDto) {

@@ -46,6 +46,10 @@ public enum ResponseCode {
     // 알림
 
 
+
+
+    // 매니저
+    MANAGER_ALREADY_EXISTS("이미 매니저가 존재합니다.")
     ;
 
     private final String message;
