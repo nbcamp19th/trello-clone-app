@@ -2,15 +2,12 @@ package com.sparta.trelloproject.domain.workspace.entity;
 
 import com.sparta.trelloproject.common.entity.Timestamped;
 import com.sparta.trelloproject.domain.user.entity.User;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
-@Entity(name = "workspaces")
+@Entity
+@Table(name = "workspaces")
 @Getter
 public class Workspace extends Timestamped {
 
@@ -18,12 +15,15 @@ public class Workspace extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull
     private String workspaceName;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
+    @NotNull
     private String workspaceDescription;
 
 }

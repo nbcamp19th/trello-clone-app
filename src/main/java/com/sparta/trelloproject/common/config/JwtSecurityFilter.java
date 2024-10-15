@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.sparta.trelloproject.common.constants.Const.USER_EMAIL;
 import static com.sparta.trelloproject.common.constants.Const.USER_ROLE;
@@ -28,11 +30,17 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
 
+    private final List<String> whiteList = List.of("^/api/v(?:[1-9])/auth/[a-zA-Z\\-]+$");
+
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
         String url = request.getRequestURI();
 
-        if (Strings.isNotBlank(url)) {
+        if (Strings.isNotBlank(url) && checkUrlPattern(url)) {
             // 나머지 API 요청은 인증 처리 진행
             // 토큰 확인
             String tokenValue = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -72,6 +80,12 @@ public class JwtSecurityFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    public boolean checkUrlPattern(String url) {
+        // 패턴과 하나도 일치하는게 없다면 jwt token 필요
+        return whiteList.stream()
+                .noneMatch(whiteUrl -> Pattern.matches(whiteUrl, url));
     }
 
 }
