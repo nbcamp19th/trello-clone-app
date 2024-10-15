@@ -8,10 +8,12 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "cards")
 @Getter
+@NoArgsConstructor
 public class Card extends Timestamped {
 
     @Id
@@ -27,8 +29,7 @@ public class Card extends Timestamped {
     @JoinColumn(name = "lists_id")
     private Lists list;
 
-    private Card(String title, String contents, LocalDateTime dueDate,Lists list)
-    {
+    private Card(String title, String contents, LocalDateTime dueDate, Lists list) {
         this.title = title;
         this.contents = contents;
         this.dueDate = dueDate;
@@ -37,5 +38,11 @@ public class Card extends Timestamped {
 
     public static Card from(CardRequestDto cardRequestDto, Lists list) {
         return new Card(cardRequestDto.getTitle(), cardRequestDto.getContents(), cardRequestDto.getDueDate(), list);
+    }
+
+    public void update(CardRequestDto cardRequestDto) {
+        this.title = cardRequestDto.getTitle();
+        this.contents = cardRequestDto.getContents();
+        this.dueDate = cardRequestDto.getDueDate();
     }
 }
