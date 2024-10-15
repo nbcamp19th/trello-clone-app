@@ -6,6 +6,7 @@ import com.sparta.trelloproject.common.exception.ResponseCode;
 import com.sparta.trelloproject.domain.workspace.entity.UserWorkspace;
 import com.sparta.trelloproject.domain.workspace.enums.WorkSpaceUserRole;
 import com.sparta.trelloproject.domain.workspace.repository.UserWorkSpaceRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,11 +18,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -63,30 +68,30 @@ public class WorkspacePermissionAspect {
     }
 
     private WorkSpaceUserRole getWorkSpaceUserRole(ProceedingJoinPoint joinPoint) {
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Method method = signature.getMethod();
-        Object[] args = joinPoint.getArgs();
-
-        Parameter[] parameters = method.getParameters();
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
         Long userId = null;
         Long workspaceId = null;
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
         if (authentication != null && authentication.isAuthenticated()) {
             AuthUser authUser = (AuthUser) authentication.getPrincipal();
-            userId = authUser.getUserId(); // userId를 가져옴
+            userId = authUser.getUserId();
+        } else {
+            throw new ForbiddenException(ResponseCode.FORBIDDEN);
         }
 
-        for (int i = 0; i < parameters.length; i++) {
-            if (parameters[i].isAnnotationPresent(PathVariable.class)) {
-                workspaceId = (Long) args[i];
-                break;
-            }
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
+        String url = request.getRequestURI();
+
+        Pattern pattern = Pattern.compile("/workspaces/([^/]+)");
+        Matcher matcher = pattern.matcher(url);
+
+        if (matcher.find()) {
+            workspaceId = Long.parseLong(matcher.group(1));
         }
 
         if (Objects.isNull(workspaceId)) {
+            Object[] args = joinPoint.getArgs();
             for (Object arg : args) {
                 try {
                     // 객체의 클래스에서 'workspaceId' 필드 찾기
