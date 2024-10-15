@@ -13,19 +13,19 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    @PatchMapping("/authority")
+    @PatchMapping("/v1/users/authority")
     public ResponseEntity<SuccessResponse<UserAuthorityUpdateResponseDto>> changeUserAuthority(
             @Valid @RequestBody UserAuthorityUpdateRequestDto userAuthorityUpdateRequestDto
     ) {
         return ResponseEntity.ok(SuccessResponse.of(userService.updateUserAuthority(userAuthorityUpdateRequestDto)));
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/v1/users/delete")
     public ResponseEntity<SuccessResponse<Void>> deleteUser(
             @AuthenticationPrincipal AuthUser authUser,
             @Valid @RequestBody UserDeleteRequestDto userDeleteRequestDto

@@ -10,11 +10,13 @@ import com.sparta.trelloproject.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.sparta.trelloproject.common.exception.ResponseCode.NOT_FOUND_USER;
 import static com.sparta.trelloproject.common.exception.ResponseCode.WRONG_PASSWORD;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserService {
     private final PasswordEncoder passwordEncoder;

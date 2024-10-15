@@ -15,12 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class AuthController {
     public final AuthService authService;
 
-    @PostMapping("/sign-up")
+    @PostMapping("/v1/auth/sign-up")
     public ResponseEntity<SuccessResponse<Void>> signUp(
             @Valid @RequestBody UserSignUpRequestDto userSignUpRequestDto
     ) {
@@ -30,7 +30,7 @@ public class AuthController {
                 .body(SuccessResponse.of(null));
     }
 
-    @PostMapping("/sign-in")
+    @PostMapping("/v1/auth/sign-in")
     public ResponseEntity<SuccessResponse<Void>> signIn(
             @Valid @RequestBody UserSignInRequestDto userSignInRequestDto
     ) {
