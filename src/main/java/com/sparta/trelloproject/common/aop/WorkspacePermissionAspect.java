@@ -37,9 +37,6 @@ public class WorkspacePermissionAspect {
     @Pointcut("@annotation(com.sparta.trelloproject.common.annotation.WorkspaceEditPermission)")
     public void workspaceEditPermissionPointcut() {}
 
-    @Pointcut("@annotation(com.sparta.trelloproject.common.annotation.WorkspaceReadPermission)")
-    public void workspaceReadPermissionPointcut() {}
-
 
     @Around("workspaceAdminPermissionPointcut()")
     public Object adminPermission(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -58,19 +55,7 @@ public class WorkspacePermissionAspect {
 
         WorkSpaceUserRole workSpaceUserRole = getWorkSpaceUserRole(joinPoint);
 
-        if (!workSpaceUserRole.equals(WorkSpaceUserRole.ROLE_EDIT_USER)) {
-            throw new ForbiddenException(ResponseCode.FORBIDDEN);
-        }
-
-        return joinPoint.proceed();
-    }
-
-    @Around("workspaceReadPermissionPointcut()")
-    public Object readPermission(ProceedingJoinPoint joinPoint) throws Throwable {
-
-        WorkSpaceUserRole workSpaceUserRole = getWorkSpaceUserRole(joinPoint);
-
-        if (!workSpaceUserRole.equals(WorkSpaceUserRole.ROLE_READ_USER)) {
+        if (workSpaceUserRole.getSeq() > WorkSpaceUserRole.ROLE_EDIT_USER.getSeq()) {
             throw new ForbiddenException(ResponseCode.FORBIDDEN);
         }
 
