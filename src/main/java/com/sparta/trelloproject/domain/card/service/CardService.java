@@ -4,12 +4,17 @@ import com.sparta.trelloproject.common.exception.ForbiddenException;
 import com.sparta.trelloproject.common.exception.NotFoundException;
 import com.sparta.trelloproject.common.exception.ResponseCode;
 import com.sparta.trelloproject.common.s3.S3Service;
+import com.sparta.trelloproject.domain.card.dto.reponse.CardImageResponseDto;
 import com.sparta.trelloproject.domain.card.dto.reponse.CardListResponseDto;
+import com.sparta.trelloproject.domain.card.dto.reponse.CardResponseDto;
 import com.sparta.trelloproject.domain.card.dto.request.CardRequestDto;
 import com.sparta.trelloproject.domain.card.entity.Card;
 import com.sparta.trelloproject.domain.card.entity.CardImage;
 import com.sparta.trelloproject.domain.card.repository.CardImageRepository;
 import com.sparta.trelloproject.domain.card.repository.CardRepository;
+import com.sparta.trelloproject.domain.comment.dto.response.UpdateCommentResponse;
+import com.sparta.trelloproject.domain.comment.repository.CommentRepository;
+import com.sparta.trelloproject.domain.comment.service.CommentService;
 import com.sparta.trelloproject.domain.list.entity.Lists;
 import com.sparta.trelloproject.domain.list.repository.ListRepository;
 import com.sparta.trelloproject.domain.workspace.entity.UserWorkspace;
@@ -17,6 +22,8 @@ import com.sparta.trelloproject.domain.workspace.enums.WorkSpaceUserRole;
 import com.sparta.trelloproject.domain.workspace.repository.UserWorkSpaceRepository;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -35,6 +42,7 @@ public class CardService {
     private final S3Service s3Service;
     private final UserWorkSpaceRepository userWorkSpaceRepository;
     private final CardImageRepository cardImageRepository;
+    private final CommentRepository commentRepository;
 
     public String saveCard(long userId, MultipartFile file, CardRequestDto cardRequestDto) {
         try {
@@ -95,5 +103,21 @@ public class CardService {
         return cardRepository.findCardList(title, contents, manager, dueDateFrom, dueDateTo,
             pageable);
     }
-}
 
+    @Transactional(readOnly = true)
+    public CardResponseDto getCard(Long id) {
+        Card card = cardRepository.findById(id)
+            .orElseThrow(() -> new IllegalStateException("Could not find card"));
+
+        List<UpdateCommentResponse> comments = commentRepository.findByCardId(id).stream()
+            .map(UpdateCommentResponse::from)
+            .collect(Collectors.toList());
+
+        CardImage cardImage = cardImageRepository.findByCardId(id);
+
+        CardImageResponseDto cardImageResponse = CardImageResponseDto.from(cardImage);
+
+        CardResponseDto response = CardResponseDto.of(card, comments, cardImageResponse);
+        return response;
+    }
+}

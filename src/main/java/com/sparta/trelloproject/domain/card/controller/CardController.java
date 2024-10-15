@@ -3,6 +3,7 @@ package com.sparta.trelloproject.domain.card.controller;
 import com.sparta.trelloproject.common.annotation.AuthUser;
 import com.sparta.trelloproject.common.response.SuccessResponse;
 import com.sparta.trelloproject.domain.card.dto.reponse.CardListResponseDto;
+import com.sparta.trelloproject.domain.card.dto.reponse.CardResponseDto;
 import com.sparta.trelloproject.domain.card.dto.request.CardRequestDto;
 import com.sparta.trelloproject.domain.card.service.CardService;
 import java.time.LocalDateTime;
@@ -84,5 +85,15 @@ public class CardController {
         @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(
             cardService.getCardList(title, contents, manager, dueDateFrom, dueDateTo, page, size));
+    }
+
+    /**
+     * 카드를 상세 조회합니다.
+     * @param id card의 id를 검색합니다.
+     * @return
+     */
+    @GetMapping("/cards/{id}")
+    public ResponseEntity<CardResponseDto> getCard(@PathVariable Long id) {
+        return ResponseEntity.ok(cardService.getCard(id));
     }
 }
