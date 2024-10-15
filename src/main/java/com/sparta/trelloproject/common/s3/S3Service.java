@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Component
+@Transactional
 public class S3Service {
 
     private final AmazonS3Client amazonS3Client;
@@ -38,7 +39,6 @@ public class S3Service {
         return url;
     }
 
-    @Transactional
     public String updateFile(MultipartFile multipartFile, Card card, String existFilePath)
         throws ServerException {
         if (existFilePath != null && !existFilePath.isEmpty()) {
