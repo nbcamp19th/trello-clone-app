@@ -12,6 +12,7 @@ import com.sparta.trelloproject.domain.card.entity.CardImage;
 import com.sparta.trelloproject.domain.card.repository.CardImageRepository;
 import java.io.IOException;
 import java.rmi.ServerException;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -70,11 +71,13 @@ public class S3Service {
             metadata.setContentLength(multipartFile.getSize());
             metadata.setContentType(multipartFile.getContentType());
 
+            String randomFileName = UUID.randomUUID().toString();
+
             amazonS3Client.putObject(
                 new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead)
             );
-            String url = amazonS3Client.getUrl(bucket, fileName).toString();
+            String url = amazonS3Client.getUrl(bucket, randomFileName+fileName).toString();
             return url;
         }
         catch (IOException e) {
