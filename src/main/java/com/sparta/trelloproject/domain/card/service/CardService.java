@@ -119,4 +119,11 @@ public class CardService {
         return response;
     }
 
+    //삭제관련 회의이후 수정!
+    public void deleteCard(Long id) {
+        Card card = cardRepository.findByCardId(id);
+
+        cardRepository.delete(card);
+    }
+
 }

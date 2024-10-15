@@ -102,4 +102,14 @@ public class CardController {
         return ResponseEntity.ok(SuccessResponse.of(cardService.getCard(id)));
     }
 
+    /**
+     * 카드를 삭제합니다
+     * @param id 카드 id를 입력받습니다
+     * @return
+     */
+    @DeleteMapping("/cards/{id}")
+    public ResponseEntity<SuccessResponse<String>> deleteCard(@PathVariable Long id) {
+        cardService.deleteCard(id);
+        return ResponseEntity.ok(SuccessResponse.of(null));
+    }
 }
