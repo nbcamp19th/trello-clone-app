@@ -3,6 +3,7 @@ package com.sparta.trelloproject.domain.workspace.entity;
 import com.sparta.trelloproject.domain.user.entity.User;
 import com.sparta.trelloproject.domain.workspace.enums.WorkSpaceUserRole;
 import jakarta.persistence.*;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

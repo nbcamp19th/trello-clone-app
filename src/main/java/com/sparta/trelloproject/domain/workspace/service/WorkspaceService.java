@@ -1,6 +1,7 @@
 package com.sparta.trelloproject.domain.workspace.service;
 
 import com.sparta.trelloproject.common.annotation.AuthUser;
+import com.sparta.trelloproject.common.annotation.WorkspacePermission;
 import com.sparta.trelloproject.common.exception.ForbiddenException;
 import com.sparta.trelloproject.common.exception.NotFoundException;
 import com.sparta.trelloproject.common.exception.ResponseCode;
