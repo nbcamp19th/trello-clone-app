@@ -11,11 +11,11 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Entity(name = "cards")
 @Getter
 public class Card extends Timestamped {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,4 +28,5 @@ public class Card extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "lists_id")
     private Lists list;
+
 }

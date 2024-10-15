@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable) // BasicAuthenticationFilter 비활성화
                 .logout(AbstractHttpConfigurer::disable) // LogoutFilter 비활성화
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**/auth/**").permitAll()
+                        .requestMatchers("/api/*/auth/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/v1/users/change-role").hasAuthority(UserRole.Authority.ADMIN)
                         .requestMatchers(HttpMethod.POST, "/api/v1/workspaces").hasAuthority(UserRole.Authority.ADMIN)
                         .anyRequest().authenticated()
