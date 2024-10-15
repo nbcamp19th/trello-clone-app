@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Entity
 @Table(name = "user_workspace")
 @Getter
@@ -28,5 +30,15 @@ public class UserWorkspace {
 
     @NotNull
     @Enumerated(EnumType.STRING)
-    private WorkSpaceUserRole userRole;
+    private WorkSpaceUserRole workSpaceUserRole;
+
+    private UserWorkspace(Workspace workspace, User user , WorkSpaceUserRole workSpaceUserRole) {
+        this.workspace = workspace;
+        this.user = user;
+        this.workSpaceUserRole = workSpaceUserRole;
+    }
+
+    public static UserWorkspace from(Workspace workspace, User user , WorkSpaceUserRole workSpaceUserRole) {
+        return new UserWorkspace(workspace , user , workSpaceUserRole);
+    }
 }
