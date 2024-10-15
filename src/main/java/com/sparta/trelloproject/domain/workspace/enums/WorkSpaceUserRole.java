@@ -8,11 +8,12 @@ import java.util.Arrays;
 @Getter
 @RequiredArgsConstructor
 public enum WorkSpaceUserRole {
-    ROLE_WORKSPACE_ADMIN(Authority.WORKSPACE_ADMIN),
-    ROLE_EDIT_USER(Authority.EDIT_USER),
-    ROLE_READ_USER(Authority.READ_USER);
+    ROLE_WORKSPACE_ADMIN(Authority.WORKSPACE_ADMIN , 1),
+    ROLE_EDIT_USER(Authority.EDIT_USER , 2),
+    ROLE_READ_USER(Authority.READ_USER , 3);
 
     private final String workspaceUserRole;
+    private final Integer seq;
 
     public static WorkSpaceUserRole of(String role) {
         return Arrays.stream(WorkSpaceUserRole.values())
