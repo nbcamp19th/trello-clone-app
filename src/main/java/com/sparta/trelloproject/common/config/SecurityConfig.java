@@ -42,13 +42,8 @@ public class SecurityConfig {
                 .logout(AbstractHttpConfigurer::disable) // LogoutFilter 비활성화
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/*/auth/**").permitAll()
-<<<<<<< HEAD
-                        .requestMatchers(HttpMethod.PATCH, "/api/v1/users/change-role").hasAuthority(UserRole.Authority.ADMIN)
-                        .requestMatchers(HttpMethod.POST, "/api/v1/workspaces").hasAuthority(UserRole.Authority.ADMIN)
-=======
                         .requestMatchers(HttpMethod.PATCH, "/api/*/users/authority").hasAuthority(UserRole.Authority.ADMIN)
                         .requestMatchers(HttpMethod.POST, "/api/*/workspaces").hasAuthority(UserRole.Authority.ADMIN)
->>>>>>> 546264139de8c347d0560f83e0ef3a940110a99b
                         .anyRequest().authenticated()
                 )
                 .build();

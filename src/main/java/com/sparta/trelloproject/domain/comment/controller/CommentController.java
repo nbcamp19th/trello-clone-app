@@ -31,25 +31,23 @@ public class CommentController {
     }
 
     //댓글 수정
-    @PatchMapping("/cards/{cardId}/comment/{commentId}")
+    @PatchMapping("/comment/{commentId}")
     public ResponseEntity<SuccessResponse<UpdateCommentResponse>> updateComment(
             @AuthenticationPrincipal AuthUser authUser,
-            @PathVariable("cardId") Long cardId,
             @PathVariable("commentId") Long commentId,
             @Valid @RequestBody UpdateCommentRequest updateCommentRequest){
-        UpdateCommentResponse updateCommentResponse=commentService.updateComment(authUser, cardId,commentId,updateCommentRequest);
+        UpdateCommentResponse updateCommentResponse=commentService.updateComment(authUser,commentId,updateCommentRequest);
         return ResponseEntity.ok(SuccessResponse.of(updateCommentResponse));
 
     }
 
     //댓글 삭제
-    @DeleteMapping("/cards/{cardId}/comment/{commentId}")
+    @DeleteMapping("/comment/{commentId}")
     public ResponseEntity<SuccessResponse<Void>> deleteComment(
             @AuthenticationPrincipal AuthUser authUser,
-            @PathVariable("cardId") Long cardId,
             @PathVariable("commentId") Long commentId
     ){
-        commentService.deleteComment(authUser,cardId,commentId);
+        commentService.deleteComment(authUser,commentId);
         return ResponseEntity.ok(SuccessResponse.of(null));
     }
 }

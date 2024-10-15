@@ -1,10 +1,14 @@
 package com.sparta.trelloproject.domain.comment.dto.response;
 
 import com.sparta.trelloproject.domain.comment.entity.Comment;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
 @Getter
+@NoArgsConstructor
 public class SaveCommentResponse {
     private Long commentId;
     private Long userId;

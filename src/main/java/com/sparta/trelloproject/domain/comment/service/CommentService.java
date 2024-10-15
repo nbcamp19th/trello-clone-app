@@ -47,7 +47,7 @@ public class CommentService {
 
     //댓글 수정
     @Transactional
-    public UpdateCommentResponse updateComment(AuthUser authUser,Long cardId, Long commentId, @Valid UpdateCommentRequest updateCommentRequest) {
+    public UpdateCommentResponse updateComment(AuthUser authUser, Long commentId, @Valid UpdateCommentRequest updateCommentRequest) {
         //댓글이 존재하는 지 확인
         Comment comment=commentRepository.findById(commentId).orElseThrow(()->
                 new NotFoundException(NOT_FOUND_COMMENT));
@@ -63,7 +63,7 @@ public class CommentService {
 
     //댓글 삭제
     @Transactional
-    public void deleteComment(AuthUser authUser,Long cardId, Long commentId) {
+    public void deleteComment(AuthUser authUser, Long commentId) {
         //댓글이 존재하는 지 확인
         Comment comment=commentRepository.findById(commentId).orElseThrow(()->
                 new NotFoundException(NOT_FOUND_COMMENT));
