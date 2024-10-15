@@ -90,7 +90,7 @@ public class CardController {
     /**
      * 카드를 상세 조회합니다.
      * @param id card의 id를 검색합니다.
-     * @return
+     * @return 카드의 내용과, 카드의 댓글, 카드의 이미지를 반환합니다.
      */
     @GetMapping("/cards/{id}")
     public ResponseEntity<CardResponseDto> getCard(@PathVariable Long id) {

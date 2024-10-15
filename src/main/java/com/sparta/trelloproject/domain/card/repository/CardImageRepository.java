@@ -7,5 +7,4 @@ public interface CardImageRepository extends JpaRepository<CardImage, Long> {
 
     CardImage findByCardId(Long cardId);
 
-    void deleteByCardId(Long id);
 }
