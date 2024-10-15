@@ -5,6 +5,7 @@ import com.sparta.trelloproject.domain.list.entity.Lists;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 @Table(name = "cards")
 @Getter
 public class Card extends Timestamped {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,4 +26,5 @@ public class Card extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "lists_id")
     private Lists list;
+
 }
