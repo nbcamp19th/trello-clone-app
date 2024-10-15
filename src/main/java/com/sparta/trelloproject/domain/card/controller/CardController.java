@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,6 +31,7 @@ public class CardController {
 
     /**
      * 카드를 생성합니다
+     *
      * @param file           파일을 입력받습니다
      * @param cardRequestDto 카드를 등록할 타이틀, 컨텐츠, 마감일과 등록할 list의 id, 워크스페이스 접근 권한을 알기위한 workSpaceid를
      *                       받습니다
@@ -48,34 +50,37 @@ public class CardController {
 
     /**
      * 카드를 수정합니다
-     * @param file 파일을 입력받습니다
+     * @param file           파일을 입력받습니다
      * @param cardRequestDto 카드를 등록할 타이틀, 컨텐츠, 마감일과 등록할 list의 id, 워크스페이스 접근 권한을 알기위한 workSpaceid를
      *                       받습니다
-     * @param cardId 수정할 카드 id를 PathVariable 입력받습니다.
-     * @param authUser 현재 로그인중인 유저 정보를 가져오기 위함입니다.
+     * @param cardId         수정할 카드 id를 PathVariable 입력받습니다.
+     * @param authUser       현재 로그인중인 유저 정보를 가져오기 위함입니다.
      * @return 수정된 파일 이름을 반환합니다.
      */
     @PatchMapping("/cards/{cardId}")
-    public ResponseEntity<SuccessResponse<String>> updateCard(@RequestParam("file") MultipartFile file,
+    public ResponseEntity<SuccessResponse<String>> updateCard(
+        @RequestParam("file") MultipartFile file,
         @ModelAttribute CardRequestDto cardRequestDto, @PathVariable Long cardId,
         @AuthenticationPrincipal AuthUser authUser) {
-        String uploadedFileName = cardService.updateCard(file, cardRequestDto, cardId, authUser.getUserId());
+        String uploadedFileName = cardService.updateCard(file, cardRequestDto, cardId,
+            authUser.getUserId());
         return ResponseEntity.ok(SuccessResponse.of(uploadedFileName));
     }
 
     /**
      * 카드를 다건 조회합니다, 제목, 내용, 매니저이름, 기한을 검색하며 페이지네이션을 구현했습니다.
-     * @param title 제목
-     * @param contents 내용
-     * @param manager 매니저 이름
+     *
+     * @param title       제목
+     * @param contents    내용
+     * @param manager     매니저 이름
      * @param dueDateFrom 기한시작
-     * @param dueDateTo 기한 끝
-     * @param page 페이지
-     * @param size 페이지
+     * @param dueDateTo   기한 끝
+     * @param page        페이지
+     * @param size        페이지
      * @return
      */
     @GetMapping("/cards")
-    public ResponseEntity<Page<CardListResponseDto>> getCardList(
+    public ResponseEntity<SuccessResponse<Page<CardListResponseDto>>> getCardList(
         @RequestParam(required = false) String title,
         @RequestParam(required = false) String contents,
         @RequestParam(required = false) String manager,
@@ -83,8 +88,8 @@ public class CardController {
         @RequestParam(name = "due-date-to", required = false) LocalDateTime dueDateTo,
         @RequestParam(defaultValue = "1") int page,
         @RequestParam(defaultValue = "10") int size) {
-        return ResponseEntity.ok(
-            cardService.getCardList(title, contents, manager, dueDateFrom, dueDateTo, page, size));
+        return ResponseEntity.ok(SuccessResponse.of(
+            cardService.getCardList(title, contents, manager, dueDateFrom, dueDateTo, page, size)));
     }
 
     /**
@@ -93,7 +98,8 @@ public class CardController {
      * @return 카드의 내용과, 카드의 댓글, 카드의 이미지를 반환합니다.
      */
     @GetMapping("/cards/{id}")
-    public ResponseEntity<CardResponseDto> getCard(@PathVariable Long id) {
-        return ResponseEntity.ok(cardService.getCard(id));
+    public ResponseEntity<SuccessResponse<CardResponseDto>> getCard(@PathVariable Long id) {
+        return ResponseEntity.ok(SuccessResponse.of(cardService.getCard(id)));
     }
+
 }

@@ -80,8 +80,7 @@ public class CardService {
                 throw new ForbiddenException(ResponseCode.INVALID_UPLOAD);
             }
 
-            Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 카드를 찾을 수 없습니다."));
+            Card card = cardRepository.findByCardId(cardId);
 
             CardImage cardImage = cardImageRepository.findByCardId(cardId);
             String filePath = cardImage.getPath();
@@ -91,7 +90,7 @@ public class CardService {
             return uploadImageUrl;
         }
         catch (IOException e) {
-            throw new IllegalArgumentException("S3 파일 업로드에 실패하였습니다.");
+            throw new ForbiddenException(ResponseCode.INVALID_UPLOAD);
         }
     }
 
@@ -106,8 +105,7 @@ public class CardService {
 
     @Transactional(readOnly = true)
     public CardResponseDto getCard(Long id) {
-        Card card = cardRepository.findById(id)
-            .orElseThrow(() -> new IllegalStateException("Could not find card"));
+        Card card = cardRepository.findByCardId(id);
 
         List<UpdateCommentResponse> comments = commentRepository.findByCardId(id).stream()
             .map(UpdateCommentResponse::from)
@@ -120,4 +118,5 @@ public class CardService {
         CardResponseDto response = CardResponseDto.of(card, comments, cardImageResponse);
         return response;
     }
+
 }
