@@ -2,11 +2,15 @@ package com.sparta.trelloproject.domain.card.controller;
 
 import com.sparta.trelloproject.common.annotation.AuthUser;
 import com.sparta.trelloproject.common.response.SuccessResponse;
+import com.sparta.trelloproject.domain.card.dto.reponse.CardListResponseDto;
 import com.sparta.trelloproject.domain.card.dto.request.CardRequestDto;
 import com.sparta.trelloproject.domain.card.service.CardService;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -56,5 +60,29 @@ public class CardController {
         @AuthenticationPrincipal AuthUser authUser) {
         String uploadedFileName = cardService.updateCard(file, cardRequestDto, cardId, authUser.getUserId());
         return ResponseEntity.ok(SuccessResponse.of(uploadedFileName));
+    }
+
+    /**
+     * 카드를 다건 조회합니다, 제목, 내용, 매니저이름, 기한을 검색하며 페이지네이션을 구현했습니다.
+     * @param title 제목
+     * @param contents 내용
+     * @param manager 매니저 이름
+     * @param dueDateFrom 기한시작
+     * @param dueDateTo 기한 끝
+     * @param page 페이지
+     * @param size 페이지
+     * @return
+     */
+    @GetMapping("/cards")
+    public ResponseEntity<Page<CardListResponseDto>> getCardList(
+        @RequestParam(required = false) String title,
+        @RequestParam(required = false) String contents,
+        @RequestParam(required = false) String manager,
+        @RequestParam(name = "due-date-from", required = false) LocalDateTime dueDateFrom,
+        @RequestParam(name = "due-date-to", required = false) LocalDateTime dueDateTo,
+        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "10") int size) {
+        return ResponseEntity.ok(
+            cardService.getCardList(title, contents, manager, dueDateFrom, dueDateTo, page, size));
     }
 }

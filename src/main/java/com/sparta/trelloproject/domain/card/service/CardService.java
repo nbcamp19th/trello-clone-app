@@ -1,10 +1,10 @@
 package com.sparta.trelloproject.domain.card.service;
 
-import com.sparta.trelloproject.common.annotation.AuthUser;
 import com.sparta.trelloproject.common.exception.ForbiddenException;
 import com.sparta.trelloproject.common.exception.NotFoundException;
 import com.sparta.trelloproject.common.exception.ResponseCode;
 import com.sparta.trelloproject.common.s3.S3Service;
+import com.sparta.trelloproject.domain.card.dto.reponse.CardListResponseDto;
 import com.sparta.trelloproject.domain.card.dto.request.CardRequestDto;
 import com.sparta.trelloproject.domain.card.entity.Card;
 import com.sparta.trelloproject.domain.card.entity.CardImage;
@@ -12,12 +12,15 @@ import com.sparta.trelloproject.domain.card.repository.CardImageRepository;
 import com.sparta.trelloproject.domain.card.repository.CardRepository;
 import com.sparta.trelloproject.domain.list.entity.Lists;
 import com.sparta.trelloproject.domain.list.repository.ListRepository;
-import com.sparta.trelloproject.domain.user.repository.UserRepository;
 import com.sparta.trelloproject.domain.workspace.entity.UserWorkspace;
 import com.sparta.trelloproject.domain.workspace.enums.WorkSpaceUserRole;
 import com.sparta.trelloproject.domain.workspace.repository.UserWorkSpaceRepository;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,6 +85,15 @@ public class CardService {
         catch (IOException e) {
             throw new IllegalArgumentException("S3 파일 업로드에 실패하였습니다.");
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Page<CardListResponseDto> getCardList(String title, String contents, String manager,
+        LocalDateTime dueDateFrom,
+        LocalDateTime dueDateTo, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return cardRepository.findCardList(title, contents, manager, dueDateFrom, dueDateTo,
+            pageable);
     }
 }
 
