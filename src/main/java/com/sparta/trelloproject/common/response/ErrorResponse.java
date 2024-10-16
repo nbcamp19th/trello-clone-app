@@ -16,6 +16,7 @@ public class ErrorResponse extends BaseResponse {
 
     private ErrorResponse(int code, String message) {
         super(code, message);
+        this.timestamp = LocalDateTime.now();
     }
 
     public static ErrorResponse from(ApiException apiException) {
