@@ -16,6 +16,7 @@ import com.sparta.trelloproject.domain.workspace.enums.WorkSpaceUserRole;
 import com.sparta.trelloproject.domain.workspace.repository.UserWorkSpaceRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +52,10 @@ public class ListService {
         validateUserAuthority(listUpdateRequestDto.getWorkspaceId(), userId, listId);
 
         Lists lists = listRepository.findByListId(listId);
-        lists.updateListTitle(listUpdateRequestDto.getTitle());
+
+        if(Strings.isNotBlank(listUpdateRequestDto.getTitle())) {
+            lists.updateListTitle(listUpdateRequestDto.getTitle());
+        }
 
         return ListUpdateResponseDto.from(listRepository.save(lists));
     }
