@@ -17,6 +17,7 @@ import com.sparta.trelloproject.domain.comment.entity.Comment;
 import com.sparta.trelloproject.domain.comment.repository.CommentRepository;
 import com.sparta.trelloproject.domain.notification.enums.NotificationMessage;
 import com.sparta.trelloproject.domain.notification.enums.NotificationType;
+import com.sparta.trelloproject.domain.notification.event.SavedCommentEvent;
 import com.sparta.trelloproject.domain.notification.service.NotificationService;
 import com.sparta.trelloproject.domain.user.entity.User;
 import com.sparta.trelloproject.domain.user.repository.UserRepository;
@@ -27,6 +28,8 @@ import com.sparta.trelloproject.domain.workspace.repository.UserWorkSpaceReposit
 import com.sparta.trelloproject.domain.workspace.repository.WorkspaceRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,6 +49,8 @@ public class CommentService {
     private final WorkspaceRepository workspaceRepository;
     private final UserWorkSpaceRepository userWorkSpaceRepository;
     private final NotificationService notificationService;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     //댓글 등록
     @Transactional
@@ -70,19 +75,10 @@ public class CommentService {
         Comment newComment=Comment.from(saveCommentRequestDto,user,card);
         commentRepository.save(newComment);
 
-
         /**
-         * 댓글 작성한 사람 제외하고, 카드 매니저들에게 알림 전송
-         *
-         * 해당 카드의 모든 매니저들을 조회 -> 개별적으로 알림
+         * 댓글 저장 알림 전송 이벤트 발생
          */
-        //카드의 매니저들 조회
-        List<Manager> cardManagers=managerRepository.findManagersByCard_Id(card.getId());
-        for (Manager cardManager : cardManagers) {
-            if(!cardManager.getId().equals(authUser.getUserId())){
-                notificationService.sendNotification(cardManager.getId(), NotificationMessage.ADDED_COMMENT.getMessage(), NotificationType.COMMENT);
-            }
-        }
+        eventPublisher.publishEvent(new SavedCommentEvent(authUser.getUserId(),card.getId()));
 
         return SaveCommentResponseDto.from(newComment);
     }
@@ -100,7 +96,6 @@ public class CommentService {
         }
         comment.update(updateCommentRequest);
 
-        //카드 관리자들에게 알림 전송
 
         return UpdateCommentResponseDto.from(comment);
     }

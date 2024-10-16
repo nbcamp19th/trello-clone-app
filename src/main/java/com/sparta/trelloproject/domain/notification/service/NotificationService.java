@@ -7,6 +7,7 @@ import com.sparta.trelloproject.common.exception.ResponseCode;
 import com.sparta.trelloproject.domain.notification.entity.Notification;
 import com.sparta.trelloproject.domain.notification.enums.NotificationMessage;
 import com.sparta.trelloproject.domain.notification.enums.NotificationType;
+import com.sparta.trelloproject.domain.notification.event.SavedCommentEvent;
 import com.sparta.trelloproject.domain.notification.repository.EmitterRepository;
 import com.sparta.trelloproject.domain.notification.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
@@ -77,9 +78,8 @@ public class NotificationService {
                                 .data(notification)
                 );
                 log.info("[알림 전송 완료 : userId={}]",targetId);
-
                 //슬랙 봇에 메시지 전송
-                slackBotService.sendSlackMessage(channelId,content);
+                // slackBotService.sendSlackMessage(channelId,content);
 
             }catch(IOException ex){
                 log.info("[알림 전송 실패 : userId={}]",targetId);

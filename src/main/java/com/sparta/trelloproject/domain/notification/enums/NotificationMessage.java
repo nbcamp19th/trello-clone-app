@@ -14,8 +14,10 @@ public enum NotificationMessage {
     ADDED_COMMENT("새로운 댓글이 달렸습니다."),
 
     // 워크스페이스 관련 메시지
-    INVITE_WORKSPACE("워크스페이스에 초대되었습니다.");
+    INVITE_WORKSPACE("워크스페이스에 초대되었습니다."),
 
+    //카드 관련 메시지
+    UPDATE_CARD("카드가 수정되었습니다");
 
     private final String message;
 }
