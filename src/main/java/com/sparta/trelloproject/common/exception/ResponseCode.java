@@ -33,7 +33,7 @@ public enum ResponseCode {
     // 카드
     NOT_FOUND_CARD("해당 카드는 존재하지 않습니다."),
     INVALID_UPLOAD("등록 오류입니다. 다시 시도해주세요."),
-
+    INVALID_EXTENTSION("해당 확장자는 업로드가 불가능합니다"),
 
     // 댓글
     NOT_FOUND_COMMENT("해당 댓글은 존재하지 않습니다."),
