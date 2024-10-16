@@ -5,6 +5,7 @@ import com.sparta.trelloproject.common.config.JwtUtil;
 import com.sparta.trelloproject.domain.user.enums.UserRole;
 import com.sparta.trelloproject.domain.workspace.dto.WorkspaceInviteRequestDto;
 import com.sparta.trelloproject.domain.workspace.dto.WorkspaceRequestDto;
+import com.sparta.trelloproject.domain.workspace.dto.WorkspaceResponseDto;
 import com.sparta.trelloproject.domain.workspace.service.WorkspaceService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -182,7 +186,10 @@ class WorkspaceControllerTest {
         String token = jwtUtil.createToken(1L , "test@test.com" , UserRole.ROLE_ADMIN);
 
         // when
-        doNothing().when(workspaceService).getWorkspaces(any());
+        List<WorkspaceResponseDto> workspaceResponseDtos = List.of(
+                new WorkspaceResponseDto(1L , "워크스페이스명" , "워크스페이스설명")
+        );
+        given(workspaceService.getWorkspaces(any())).willReturn(workspaceResponseDtos);
 
         // then
         mvc.perform(get("/api/v1/workspaces")
