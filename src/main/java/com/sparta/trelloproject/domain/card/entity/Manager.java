@@ -1,7 +1,13 @@
 package com.sparta.trelloproject.domain.card.entity;
 
 import com.sparta.trelloproject.domain.user.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
@@ -23,4 +29,13 @@ public class Manager {
     @ManyToOne
     @JoinColumn(name = "cards_id")
     private Card card;
+
+    private Manager(User user, Card card) {
+        this.user = user;
+        this.card = card;
+    }
+
+    public static Manager from(User user, Card card) {
+        return new Manager(user, card);
+    }
 }
