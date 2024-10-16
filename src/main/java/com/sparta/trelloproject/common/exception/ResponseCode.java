@@ -43,6 +43,8 @@ public enum ResponseCode {
 
 
     // 알림
+    CONNECTION_ERROR("연결 오류가 발생했습니다."),
+    NOT_FOUND_EMITTER("해당하는 Emitter를 찾을 수 없습니다.");
 
 
     ;
