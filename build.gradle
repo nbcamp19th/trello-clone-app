@@ -52,6 +52,12 @@ dependencies {
     compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.12.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.12.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.12.5'
+
+    // redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    //redisson
+    implementation 'org.redisson:redisson-spring-boot-starter:3.27.0'
 }
 
 tasks.named('test') {
