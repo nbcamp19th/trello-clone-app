@@ -5,9 +5,10 @@ import lombok.Getter;
 
 @Getter
 public class CardImageResponseDto {
+
     private String path;
 
-    public CardImageResponseDto(String path) {
+    private CardImageResponseDto(String path) {
         this.path = path;
     }
 

@@ -50,6 +50,7 @@ public class CardController {
 
     /**
      * 카드를 수정합니다
+     *
      * @param file           파일을 입력받습니다
      * @param cardRequestDto 카드를 등록할 타이틀, 컨텐츠, 마감일과 등록할 list의 id, 워크스페이스 접근 권한을 알기위한 workSpaceid를
      *                       받습니다
@@ -94,6 +95,7 @@ public class CardController {
 
     /**
      * 카드를 상세 조회합니다.
+     *
      * @param id card의 id를 검색합니다.
      * @return 카드의 내용과, 카드의 댓글, 카드의 이미지를 반환합니다.
      */
@@ -104,6 +106,7 @@ public class CardController {
 
     /**
      * 카드를 삭제합니다
+     *
      * @param id 카드 id를 입력받습니다
      * @return
      */

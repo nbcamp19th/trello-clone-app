@@ -26,7 +26,8 @@ public class CardResponseDto {
         this.cardImage = cardImage;
     }
 
-    public static CardResponseDto of(Card card, List<UpdateCommentResponse> comments, CardImageResponseDto cardImage) {
+    public static CardResponseDto of(Card card, List<UpdateCommentResponse> comments,
+        CardImageResponseDto cardImage) {
         return new CardResponseDto(
             card.getId(),
             card.getTitle(),

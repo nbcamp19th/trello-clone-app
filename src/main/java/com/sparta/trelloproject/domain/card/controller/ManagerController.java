@@ -19,11 +19,13 @@ public class ManagerController {
 
     /**
      * 매니저를 등록합니다
+     *
      * @param managerRequestDto userid와 cardid를 받습니다
      * @return
      */
     @PostMapping("/manager")
-    public ResponseEntity<SuccessResponse<String>> saveCard(@RequestBody ManagerRequestDto managerRequestDto){
+    public ResponseEntity<SuccessResponse<String>> saveCard(
+        @RequestBody ManagerRequestDto managerRequestDto) {
         managerService.addManager(managerRequestDto);
         return ResponseEntity.ok(SuccessResponse.of(null));
     }

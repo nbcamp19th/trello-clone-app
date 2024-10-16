@@ -3,11 +3,16 @@ package com.sparta.trelloproject.domain.card.entity;
 import com.sparta.trelloproject.common.entity.Timestamped;
 import com.sparta.trelloproject.domain.card.dto.request.CardRequestDto;
 import com.sparta.trelloproject.domain.list.entity.Lists;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-
 import java.time.LocalDateTime;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity

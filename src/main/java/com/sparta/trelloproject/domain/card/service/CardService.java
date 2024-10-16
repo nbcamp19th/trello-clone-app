@@ -14,7 +14,6 @@ import com.sparta.trelloproject.domain.card.repository.CardImageRepository;
 import com.sparta.trelloproject.domain.card.repository.CardRepository;
 import com.sparta.trelloproject.domain.comment.dto.response.UpdateCommentResponse;
 import com.sparta.trelloproject.domain.comment.repository.CommentRepository;
-import com.sparta.trelloproject.domain.comment.service.CommentService;
 import com.sparta.trelloproject.domain.list.entity.Lists;
 import com.sparta.trelloproject.domain.list.repository.ListRepository;
 import com.sparta.trelloproject.domain.workspace.entity.UserWorkspace;

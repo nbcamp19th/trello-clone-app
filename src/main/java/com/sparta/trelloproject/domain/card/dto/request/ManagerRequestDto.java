@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class ManagerRequestDto {
+
     private Long userId;
     private Long cardId;
 }

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CardRepository extends JpaRepository<Card, Long>, CardQueryRepository {
 
-    default Card findByCardId(Long cardId){
+    default Card findByCardId(Long cardId) {
         return findById(cardId)
             .orElseThrow(() -> new NotFoundException(NOT_FOUND_CARD));
     }

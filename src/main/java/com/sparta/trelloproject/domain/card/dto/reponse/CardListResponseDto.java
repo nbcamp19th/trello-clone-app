@@ -1,5 +1,6 @@
 package com.sparta.trelloproject.domain.card.dto.reponse;
 
+import com.sparta.trelloproject.domain.card.entity.Card;
 import java.time.LocalDateTime;
 import lombok.Getter;
 
@@ -18,8 +19,9 @@ public class CardListResponseDto {
         this.dueDate = dueDate;
     }
 
-    public static CardListResponseDto of(Long id, String title, String contents, LocalDateTime dueDate) {
-        return new CardListResponseDto(id, title, contents, dueDate);
+    public static CardListResponseDto of(Card card) {
+        return new CardListResponseDto(card.getId(), card.getTitle(), card.getContents(),
+            card.getDueDate());
     }
 }
 
