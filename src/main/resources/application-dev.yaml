@@ -13,6 +13,8 @@ spring:
         highlight_sql: true
         show_sql: true
         format_sql: true
+  config:
+    import: optional:file:.env[.properties]
 
 logging:
   level:
