@@ -97,8 +97,6 @@ services:
     volumes:
       - ./volumes/sh/redis-cluster.sh:/usr/local/etc/redis/redis-cluster.sh
     command: /bin/sh -c "sh /usr/local/etc/redis/redis-cluster.sh && tail -f /dev/null"
-    tty: true # ExitCode가 0으로 나오면 정상종료
-    stdin_open: true
 # redis-cluster의 exec에 접근해서 아래 명령어 칠 것
 # redis-cli --cluster create redis-node-1:7000 redis-node-2:7001 redis-node-3:7002 redis-node-4:7003 redis-node-5:7004 redis-node-6:7005 --cluster-replicas 1 --cluster-yes
 
