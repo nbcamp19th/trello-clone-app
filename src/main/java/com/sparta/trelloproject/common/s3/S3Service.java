@@ -12,6 +12,7 @@ import com.sparta.trelloproject.domain.card.entity.CardImage;
 import com.sparta.trelloproject.domain.card.repository.CardImageRepository;
 import java.io.IOException;
 import java.rmi.ServerException;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +32,11 @@ public class S3Service {
     private String bucket;
 
     public String uploadFile(MultipartFile multipartFile, Card card) throws ServerException {
+        if(!isMatchingExtension(multipartFile))
+        {
+            System.out.println("타나");
+            throw new ForbiddenException(ResponseCode.INVALID_EXTENTSION);
+        }
         String url = uploadFileToS3(multipartFile);
 
         CardImageRequestDto cardImageDto = createCardImageDto(multipartFile, url);
@@ -73,7 +79,7 @@ public class S3Service {
             String randomFileName = UUID.randomUUID().toString();
 
             amazonS3Client.putObject(
-                new PutObjectRequest(bucket, fileName, multipartFile.getInputStream(), metadata)
+                new PutObjectRequest(bucket, randomFileName+fileName, multipartFile.getInputStream(), metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead)
             );
             String url = amazonS3Client.getUrl(bucket, randomFileName + fileName).toString();
@@ -89,5 +95,13 @@ public class S3Service {
         String fileName = originalFileName.substring(0, originalFileName.lastIndexOf("."));
         String extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
         return new CardImageRequestDto(url, fileName, extension);
+    }
+
+    private boolean isMatchingExtension(MultipartFile multipartFile)
+    {
+        List<String> extensions = List.of("jpg", "png", "pdf", "csv");
+        String originalFileName = multipartFile.getOriginalFilename();
+        String extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+        return extensions.contains(extension.toLowerCase());
     }
 }
