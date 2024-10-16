@@ -4,12 +4,11 @@ import com.sparta.trelloproject.common.entity.Timestamped;
 import com.sparta.trelloproject.domain.list.entity.Lists;
 import com.sparta.trelloproject.domain.workspace.entity.Workspace;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "boards")
@@ -33,7 +32,7 @@ public class Board extends Timestamped {
     private Workspace workspace;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Lists> lists;
+    private Set<Lists> lists;
 
     public Board(String title, String backgroundColor, Workspace workspace) {
         this.title = title;

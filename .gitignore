@@ -38,3 +38,6 @@ out/
 
 ### private.yaml ###
 application-private.yaml
+
+### .env ###
+.env
