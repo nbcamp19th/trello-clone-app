@@ -5,6 +5,7 @@ import com.sparta.trelloproject.common.response.SuccessResponse;
 import com.sparta.trelloproject.domain.card.dto.reponse.CardListResponseDto;
 import com.sparta.trelloproject.domain.card.dto.reponse.CardResponseDto;
 import com.sparta.trelloproject.domain.card.dto.request.CardRequestDto;
+import com.sparta.trelloproject.domain.card.dto.request.CardStatusRequestDto;
 import com.sparta.trelloproject.domain.card.service.CardService;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -113,6 +115,19 @@ public class CardController {
     @DeleteMapping("/cards/{id}")
     public ResponseEntity<SuccessResponse<String>> deleteCard(@PathVariable Long id) {
         cardService.deleteCard(id);
+        return ResponseEntity.ok(SuccessResponse.of(null));
+    }
+
+    /**
+     * 카드 상태를 업데이트 합니다
+     *
+     * @param cardId 카드 아이디를 입력받습니다.
+     * @return
+     */
+    @PatchMapping("/cards/{cardId}/status")
+    public ResponseEntity<SuccessResponse<String>> updateCardStatus(@PathVariable Long cardId,
+        @RequestBody CardStatusRequestDto cardStatusRequestDto) {
+        cardService.updateCardStatus(cardId, cardStatusRequestDto);
         return ResponseEntity.ok(SuccessResponse.of(null));
     }
 }
