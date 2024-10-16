@@ -110,6 +110,11 @@ public class WorkspacePermissionAspect {
 
         UserWorkspace userWorkSpace = userWorkSpaceRepository.findByWorkspaceIdAndUserId(workspaceId , userId);
 
+        if (userWorkSpace == null || userWorkSpace.getWorkSpaceUserRole().getSeq() > WorkSpaceUserRole.ROLE_EDIT_USER.getSeq()) {
+            log.warn("Forbidden access for userId: {} and workspaceId: {}", userId, workspaceId);
+            throw new ForbiddenException(ResponseCode.FORBIDDEN);
+        }
+
         return userWorkSpace.getWorkSpaceUserRole();
     }
 }
