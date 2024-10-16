@@ -9,10 +9,10 @@ import com.sparta.trelloproject.domain.card.entity.Card;
 import com.sparta.trelloproject.domain.card.entity.Manager;
 import com.sparta.trelloproject.domain.card.repository.CardRepository;
 import com.sparta.trelloproject.domain.card.repository.ManagerRepository;
-import com.sparta.trelloproject.domain.comment.dto.request.SaveCommentRequest;
-import com.sparta.trelloproject.domain.comment.dto.request.UpdateCommentRequest;
-import com.sparta.trelloproject.domain.comment.dto.response.SaveCommentResponse;
-import com.sparta.trelloproject.domain.comment.dto.response.UpdateCommentResponse;
+import com.sparta.trelloproject.domain.comment.dto.request.SaveCommentRequestDto;
+import com.sparta.trelloproject.domain.comment.dto.request.UpdateCommentRequestDto;
+import com.sparta.trelloproject.domain.comment.dto.response.SaveCommentResponseDto;
+import com.sparta.trelloproject.domain.comment.dto.response.UpdateCommentResponseDto;
 import com.sparta.trelloproject.domain.comment.entity.Comment;
 import com.sparta.trelloproject.domain.comment.repository.CommentRepository;
 import com.sparta.trelloproject.domain.notification.enums.NotificationMessage;
@@ -49,16 +49,16 @@ public class CommentService {
 
     //댓글 등록
     @Transactional
-    public SaveCommentResponse saveComment(AuthUser authUser,Long cardId, SaveCommentRequest saveCommentRequest) {
+    public SaveCommentResponseDto saveComment(AuthUser authUser, Long cardId, SaveCommentRequestDto saveCommentRequestDto) {
         User user=userRepository.findById(authUser.getUserId()).orElseThrow(()->
                 new NotFoundException(NOT_FOUND_USER));
 
         //워크스페이스가 있는 지 확인
-        Workspace workspace = workspaceRepository.findById(saveCommentRequest.getWorkspaceId())
+        Workspace workspace = workspaceRepository.findById(saveCommentRequestDto.getWorkspaceId())
                 .orElseThrow(() -> new NotFoundException(ResponseCode.NOT_FOUND_WORKSPACE));
 
         //읽기 전용 유저인지 확인
-        UserWorkspace userWorkspace = userWorkSpaceRepository.findByWorkspaceIdAndUserId(saveCommentRequest.getWorkspaceId(), authUser.getUserId());
+        UserWorkspace userWorkspace = userWorkSpaceRepository.findByWorkspaceIdAndUserId(saveCommentRequestDto.getWorkspaceId(), authUser.getUserId());
         if (userWorkspace == null || userWorkspace.getWorkSpaceUserRole() == WorkSpaceUserRole.ROLE_READ_USER) {
             throw new ForbiddenException(ResponseCode.FORBIDDEN);
         }
@@ -67,7 +67,7 @@ public class CommentService {
                 new NotFoundException(NOT_FOUND_CARD));
 
         //새로운 댓글 생성 및 저장
-        Comment newComment=Comment.from(saveCommentRequest,user,card);
+        Comment newComment=Comment.from(saveCommentRequestDto,user,card);
         commentRepository.save(newComment);
 
 
@@ -84,12 +84,12 @@ public class CommentService {
             }
         }
 
-        return SaveCommentResponse.from(newComment);
+        return SaveCommentResponseDto.from(newComment);
     }
 
     //댓글 수정
     @Transactional
-    public UpdateCommentResponse updateComment(AuthUser authUser, Long commentId, @Valid UpdateCommentRequest updateCommentRequest) {
+    public UpdateCommentResponseDto updateComment(AuthUser authUser, Long commentId, @Valid UpdateCommentRequestDto updateCommentRequest) {
         //댓글이 존재하는 지 확인
         Comment comment=commentRepository.findById(commentId).orElseThrow(()->
                 new NotFoundException(NOT_FOUND_COMMENT));
@@ -102,7 +102,7 @@ public class CommentService {
 
         //카드 관리자들에게 알림 전송
 
-        return UpdateCommentResponse.from(comment);
+        return UpdateCommentResponseDto.from(comment);
     }
 
     //댓글 삭제

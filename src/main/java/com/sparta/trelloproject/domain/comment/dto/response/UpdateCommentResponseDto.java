@@ -5,14 +5,14 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class UpdateCommentResponse {
+public class UpdateCommentResponseDto {
     private Long commentId;
     private Long userId;
     private Long cardId;
     private String contents;
     private LocalDateTime modifiedAt;
 
-    private UpdateCommentResponse(Long commentId,Long userId,Long cardId,String contents,LocalDateTime modifiedAt){
+    private UpdateCommentResponseDto(Long commentId, Long userId, Long cardId, String contents, LocalDateTime modifiedAt){
         this.commentId=commentId;
         this.userId=userId;
         this.cardId=cardId;
@@ -20,8 +20,8 @@ public class UpdateCommentResponse {
         this.modifiedAt=modifiedAt;
     }
 
-    public static UpdateCommentResponse from(Comment comment){
-        return new UpdateCommentResponse(
+    public static UpdateCommentResponseDto from(Comment comment){
+        return new UpdateCommentResponseDto(
                 comment.getId(),
                 comment.getUser().getId(),
                 comment.getCard().getId(),

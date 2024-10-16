@@ -5,6 +5,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface ManagerRepository extends JpaRepository<Manager,Long> {
+
+public interface ManagerRepository extends JpaRepository<Manager, Long> {
+
+    boolean existsByUserIdAndCardId(Long id, Long id1);
     List<Manager> findManagersByCard_Id(Long id);
+
 }

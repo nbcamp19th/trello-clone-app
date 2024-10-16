@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UpdateCommentRequest {
+public class UpdateCommentRequestDto {
     @NotBlank(message = "내용은 필수 입력 값입니다.")
     private String contents;
 }

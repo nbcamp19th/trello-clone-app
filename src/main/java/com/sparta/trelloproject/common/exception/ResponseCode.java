@@ -32,6 +32,7 @@ public enum ResponseCode {
 
     // 카드
     NOT_FOUND_CARD("해당 카드는 존재하지 않습니다."),
+    INVALID_UPLOAD("등록 오류입니다. 다시 시도해주세요."),
 
 
     // 댓글
@@ -44,10 +45,13 @@ public enum ResponseCode {
 
     // 알림
     CONNECTION_ERROR("연결 오류가 발생했습니다."),
-    NOT_FOUND_EMITTER("해당하는 Emitter를 찾을 수 없습니다.");
+    NOT_FOUND_EMITTER("해당하는 Emitter를 찾을 수 없습니다."),
 
 
-    ;
+
+
+    // 매니저
+    MANAGER_ALREADY_EXISTS("이미 매니저가 존재합니다.");
 
     private final String message;
 }

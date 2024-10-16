@@ -52,6 +52,19 @@ dependencies {
     compileOnly group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.12.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.12.5'
     runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.12.5'
+
+    //AWS
+    implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+    implementation 'com.sun.xml.bind:jaxb-impl:2.3.2'
+
+    //Slack API
+    implementation("com.slack.api:bolt:1.43.1")
+    implementation("com.slack.api:bolt-servlet:1.43.1")
+    implementation("com.slack.api:bolt-jetty:1.43.1")
+    implementation("org.slf4j:slf4j-simple:1.7.36")
+    implementation 'org.json:json:20190722'
 }
 
 tasks.named('test') {

@@ -25,7 +25,9 @@ public class NotificationService {
     private static final Long DEFAULT_TIMEOUT=60L*1000*60;
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
+    private final SlackBotService slackBotService;
 
+    private final String channelId="C07S2HXJ5U2";
     /**
      * 클라이언트가 구독을 위해 호출하는 메서드
      * 사용자 아이디를 기반으로 이벤트 Emitter를 생성
@@ -75,6 +77,10 @@ public class NotificationService {
                                 .data(notification)
                 );
                 log.info("[알림 전송 완료 : userId={}]",targetId);
+
+                //슬랙 봇에 메시지 전송
+                slackBotService.sendSlackMessage(channelId,content);
+
             }catch(IOException ex){
                 log.info("[알림 전송 실패 : userId={}]",targetId);
                 emitterRepository.deleteById(targetId); //전송 실패 시 구독 취소
