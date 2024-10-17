@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SaveCommentRequest {
+public class SaveCommentRequestDto {
     @NotNull
     private Long workspaceId;
 

@@ -2,10 +2,10 @@ package com.sparta.trelloproject.domain.comment.controller;
 
 import com.sparta.trelloproject.common.annotation.AuthUser;
 import com.sparta.trelloproject.common.response.SuccessResponse;
-import com.sparta.trelloproject.domain.comment.dto.request.SaveCommentRequest;
-import com.sparta.trelloproject.domain.comment.dto.request.UpdateCommentRequest;
-import com.sparta.trelloproject.domain.comment.dto.response.SaveCommentResponse;
-import com.sparta.trelloproject.domain.comment.dto.response.UpdateCommentResponse;
+import com.sparta.trelloproject.domain.comment.dto.request.SaveCommentRequestDto;
+import com.sparta.trelloproject.domain.comment.dto.request.UpdateCommentRequestDto;
+import com.sparta.trelloproject.domain.comment.dto.response.SaveCommentResponseDto;
+import com.sparta.trelloproject.domain.comment.dto.response.UpdateCommentResponseDto;
 import com.sparta.trelloproject.domain.comment.service.CommentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,22 +21,22 @@ public class CommentController {
 
     //댓글 등록
     @PostMapping("/cards/{cardId}/comment")
-    public ResponseEntity<SuccessResponse<SaveCommentResponse>>saveComment(
+    public ResponseEntity<SuccessResponse<SaveCommentResponseDto>>saveComment(
             @AuthenticationPrincipal AuthUser authUser,
             @PathVariable("cardId")Long cardId,
-            @Valid @RequestBody SaveCommentRequest saveCommentRequest){
+            @Valid @RequestBody SaveCommentRequestDto saveCommentRequestDto){
 
-        SaveCommentResponse saveCommentResponse=commentService.saveComment(authUser,cardId,saveCommentRequest);
+        SaveCommentResponseDto saveCommentResponse=commentService.saveComment(authUser,cardId, saveCommentRequestDto);
         return ResponseEntity.ok(SuccessResponse.of(saveCommentResponse));
     }
 
     //댓글 수정
     @PatchMapping("/comment/{commentId}")
-    public ResponseEntity<SuccessResponse<UpdateCommentResponse>> updateComment(
+    public ResponseEntity<SuccessResponse<UpdateCommentResponseDto>> updateComment(
             @AuthenticationPrincipal AuthUser authUser,
             @PathVariable("commentId") Long commentId,
-            @Valid @RequestBody UpdateCommentRequest updateCommentRequest){
-        UpdateCommentResponse updateCommentResponse=commentService.updateComment(authUser,commentId,updateCommentRequest);
+            @Valid @RequestBody UpdateCommentRequestDto updateCommentRequest){
+        UpdateCommentResponseDto updateCommentResponse=commentService.updateComment(authUser,commentId,updateCommentRequest);
         return ResponseEntity.ok(SuccessResponse.of(updateCommentResponse));
 
     }

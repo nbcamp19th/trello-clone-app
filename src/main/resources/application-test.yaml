@@ -9,6 +9,10 @@ spring:
       enabled: true
   config:
     import: optional:file:.env[.properties]
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
 
   jpa:
     hibernate:
@@ -38,3 +42,5 @@ cloud:
       static: ${S3_REGION}
     stack:
       auto: false
+
+slackBotToken: ${SLACKBOT_TOKEN}

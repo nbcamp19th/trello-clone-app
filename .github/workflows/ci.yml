@@ -34,17 +34,23 @@ jobs:
       - name: Grant
         run: chmod +x ./gradlew
 
+      - name: Create application-build.yaml from secret
+        run: |
+          mkdir -p ./src/main/resources/yml
+          echo "${{ secrets.APPLICATION_BUILD_YAML }}" > ./src/main/resources/yml/application-build.yaml
+
       - name: Build with Gradle
         run: ./gradlew build -x test
 
       - name: Run tests
         env:
+          SLACKBOT_TOKEN: ${{ secrets.SLACKBOT_TOKEN }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           S3_BUCKET: ${{ secrets.S3_BUCKET }}
           S3_PUBLIC: ${{ secrets.S3_PUBLIC }}
           S3_SECRET: ${{ secrets.S3_SECRET }}
           S3_REGION: ${{ secrets.S3_REGION }}
-        run: ./gradlew test
+        run: ./gradlew test -Dspring.profiles.active=build
 
       - name: Notify on success
         if: success()
