@@ -1,24 +1,34 @@
 package com.sparta.trelloproject.domain.workspace.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.trelloproject.common.config.JwtSecurityFilter;
 import com.sparta.trelloproject.common.config.JwtUtil;
 import com.sparta.trelloproject.domain.user.enums.UserRole;
 import com.sparta.trelloproject.domain.workspace.dto.WorkspaceInviteRequestDto;
 import com.sparta.trelloproject.domain.workspace.dto.WorkspaceRequestDto;
 import com.sparta.trelloproject.domain.workspace.dto.WorkspaceResponseDto;
 import com.sparta.trelloproject.domain.workspace.service.WorkspaceService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
@@ -30,18 +40,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-//@ActiveProfiles("test")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@AutoConfigureMockMvc
+@WebMvcTest(controllers = WorkspaceController.class)
+@ExtendWith(SpringExtension.class)
 class WorkspaceControllerTest {
-    @Autowired
     private MockMvc mvc;
+
+    @Autowired
+    private WebApplicationContext webApplicationContext;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
+    @SpyBean
     private JwtUtil jwtUtil;
+
+    @MockBean
+    private JwtSecurityFilter jwtSecurityFilter;
 
     @MockBean
     private WorkspaceService workspaceService;
@@ -51,6 +65,12 @@ class WorkspaceControllerTest {
 
     @MockBean
     private RedissonClient redissonClient;  // RedissonClient를 Mocking
+
+    @BeforeEach
+    public void setUp() {
+        mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
+                .build();
+    }
 
     @Test
     public void addWorkspace_동작완료() throws Exception {
