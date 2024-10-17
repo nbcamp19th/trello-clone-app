@@ -1,5 +1,6 @@
 package com.sparta.trelloproject.domain.card.service;
 
+import com.sparta.trelloproject.common.annotation.RedissonLock;
 import com.sparta.trelloproject.common.exception.ForbiddenException;
 import com.sparta.trelloproject.common.exception.NotFoundException;
 import com.sparta.trelloproject.common.exception.ResponseCode;
@@ -135,6 +136,7 @@ public class CardService {
         cardRepository.delete(card);
     }
 
+    @RedissonLock("#update-card")
     public void updateCardStatus(Long cardId, CardStatusRequestDto cardStatusRequestDto) {
         Card card = cardRepository.findByCardId(cardId);
         card.updateStatus(cardStatusRequestDto);

@@ -8,13 +8,16 @@ import com.sparta.trelloproject.domain.workspace.dto.WorkspaceRequestDto;
 import com.sparta.trelloproject.domain.workspace.dto.WorkspaceResponseDto;
 import com.sparta.trelloproject.domain.workspace.service.WorkspaceService;
 import org.junit.jupiter.api.Test;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -27,6 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class WorkspaceControllerTest {
@@ -41,6 +45,12 @@ class WorkspaceControllerTest {
 
     @MockBean
     private WorkspaceService workspaceService;
+
+    @MockBean
+    private RedisTemplate<String, Object> redisTemplate;
+
+    @MockBean
+    private RedissonClient redissonClient;  // RedissonClient를 Mocking
 
     @Test
     public void addWorkspace_동작완료() throws Exception {
