@@ -34,13 +34,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Wait for Redis to be ready
-        run: |
-          until redis-cli -h localhost -p 6379 ping | grep PONG; do
-            echo "Waiting for Redis to start..."
-            sleep 5
-          done
-
       - name: Cache Gradle packages
         uses: actions/cache@v3
         with:
