@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/*/auth/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/*/users/authority").hasAuthority(UserRole.Authority.ADMIN)
                         .requestMatchers(HttpMethod.POST, "/api/*/workspaces").hasAuthority(UserRole.Authority.ADMIN)
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();

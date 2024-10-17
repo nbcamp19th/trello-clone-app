@@ -71,6 +71,15 @@ dependencies {
     implementation("com.slack.api:bolt-jetty:1.43.1")
     implementation("org.slf4j:slf4j-simple:1.7.36")
     implementation 'org.json:json:20190722'
+
+    //ELK
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
+
+    //Actuator
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+    //prometheus
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {
