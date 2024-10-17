@@ -1,6 +1,7 @@
 package com.sparta.trelloproject.domain.list.service;
 
 import com.sparta.trelloproject.common.exception.ForbiddenException;
+import com.sparta.trelloproject.common.exception.InvalidParameterException;
 import com.sparta.trelloproject.domain.board.dto.BoardAuthorityDto;
 import com.sparta.trelloproject.domain.board.entity.Board;
 import com.sparta.trelloproject.domain.board.repository.BoardRepository;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.sparta.trelloproject.common.exception.ResponseCode.FORBIDDEN;
+import static com.sparta.trelloproject.common.exception.ResponseCode.INVALID_LIST_SEQUENCE;
 
 @Slf4j
 @Service
@@ -66,6 +68,10 @@ public class ListService {
         if (listAuthorityDto.getSequence() == sequence)
             return;
 
+        if (listAuthorityDto.getListCount() < sequence) {
+            throw new InvalidParameterException(INVALID_LIST_SEQUENCE);
+        }
+
         if (sequence < listAuthorityDto.getSequence()) {
             listRepository.updateSequenceIncrement(sequence, listAuthorityDto.getSequence(), listAuthorityDto.getBoardId());
         } else {
@@ -75,10 +81,10 @@ public class ListService {
     }
 
     public void deleteList(long userId, long listId, ListDeleteRequestDto listDeleteRequestDto) {
-        validateUserAuthority(listDeleteRequestDto.getWorkspaceId(), userId, listId);
+        ListAuthorityDto listAuthorityDto = validateUserAuthority(listDeleteRequestDto.getWorkspaceId(), userId, listId);
 
-        // TODO : 삭제시 리스트와 관련된 모든 데이터가 삭제되는 건 나중으로 cascade 로 사용할 것
         listRepository.deleteById(listId);
+        listRepository.updateSequenceDecrement(null, listAuthorityDto.getSequence(), listAuthorityDto.getBoardId());
     }
 
     private ListAuthorityDto validateUserAuthority(long workspaceId, long userId, long listId) {

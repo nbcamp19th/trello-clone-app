@@ -1,5 +1,6 @@
 package com.sparta.trelloproject.domain.list.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -20,18 +21,42 @@ public class ListQueryRepositoryImpl implements ListQueryRepository {
     }
 
     @Override
-    public void updateSequenceIncrement(int sequence, int originSequence, long boardId) {
+    public void updateSequenceIncrement(Integer sequence, Integer originSequence, long boardId) {
         jpaQueryFactory.update(lists)
                 .set(lists.sequence, lists.sequence.add(1))
-                .where(lists.sequence.goe(sequence), (lists.sequence.lt(originSequence)), lists.board.id.eq(boardId))
+                .where(greaterThanOrEqualToSequence(sequence), lessThanSequence(originSequence), lists.board.id.eq(boardId))
                 .execute();
     }
 
     @Override
-    public void updateSequenceDecrement(int sequence, int originSequence, long boardId) {
+    public void updateSequenceDecrement(Integer sequence, Integer originSequence, long boardId) {
         jpaQueryFactory.update(lists)
                 .set(lists.sequence, lists.sequence.add(-1))
-                .where(lists.sequence.loe(sequence), (lists.sequence.gt(originSequence)), lists.board.id.eq(boardId))
+                .where(lessThanOrEqualToSequence(sequence), greaterThanSequence(originSequence), lists.board.id.eq(boardId))
                 .execute();
+    }
+
+    private BooleanExpression lessThanOrEqualToSequence(Integer sequence) {
+        if(sequence == null) return null;
+
+        return lists.sequence.loe(sequence);
+    }
+
+    private BooleanExpression lessThanSequence(Integer sequence) {
+        if(sequence == null) return null;
+
+        return lists.sequence.lt(sequence);
+    }
+
+    private BooleanExpression greaterThanOrEqualToSequence(Integer sequence) {
+        if(sequence == null) return null;
+
+        return lists.sequence.goe(sequence);
+    }
+
+    private BooleanExpression greaterThanSequence(Integer sequence) {
+        if(sequence == null) return null;
+
+        return lists.sequence.gt(sequence);
     }
 }

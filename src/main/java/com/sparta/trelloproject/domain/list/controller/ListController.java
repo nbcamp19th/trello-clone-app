@@ -9,11 +9,14 @@ import com.sparta.trelloproject.domain.list.dto.response.ListCreateResponseDto;
 import com.sparta.trelloproject.domain.list.dto.response.ListUpdateResponseDto;
 import com.sparta.trelloproject.domain.list.service.ListService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Validated
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -45,7 +48,7 @@ public class ListController {
     public ResponseEntity<SuccessResponse<Void>> updateListSequence(
             @AuthenticationPrincipal AuthUser authUser,
             @PathVariable long listId,
-            @PathVariable int sequence,
+            @Min(value = 1, message = "순서는 1 이상이어야 합니다.") @PathVariable int sequence,
             @Valid @RequestBody ListUpdateRequestDto listUpdateRequestDto
     ) {
         listService.updateListSequence(authUser.getUserId(), listId, sequence, listUpdateRequestDto);
