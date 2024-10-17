@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserWorkSpaceRepository extends JpaRepository<UserWorkspace, Long>, UserWorkspaceQueryRepository {
     UserWorkspace findByWorkspaceIdAndUserId(Long workspaceId, Long userId);
+    void deleteByUserId(long userId);
 
     default BoardAuthorityDto findByBoardId(long workspaceId, long userId, long boardId) {
         return findUserWorkspaceWithUserIdAndBoardId(workspaceId, userId, boardId)

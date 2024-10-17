@@ -7,6 +7,7 @@ import com.sparta.trelloproject.domain.user.dto.request.UserDeleteRequestDto;
 import com.sparta.trelloproject.domain.user.dto.response.UserAuthorityUpdateResponseDto;
 import com.sparta.trelloproject.domain.user.entity.User;
 import com.sparta.trelloproject.domain.user.repository.UserRepository;
+import com.sparta.trelloproject.domain.workspace.service.UserWorkspaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import static com.sparta.trelloproject.common.exception.ResponseCode.WRONG_PASSW
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final UserWorkspaceService userWorkspaceService;
 
     public UserAuthorityUpdateResponseDto updateUserAuthority(UserAuthorityUpdateRequestDto userAuthorityUpdateRequestDto) {
         User user = userRepository.findByUserId(userAuthorityUpdateRequestDto.getUserId());
@@ -41,6 +43,7 @@ public class UserService {
         }
 
         user.deleteUser();
+        userWorkspaceService.deleteUserWorkspace(userId);
         userRepository.save(user);
     }
 
