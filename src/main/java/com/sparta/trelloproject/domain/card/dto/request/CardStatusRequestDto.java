@@ -12,5 +12,6 @@ import lombok.Setter;
 public class CardStatusRequestDto {
 
     private String cardStatus;
+    private Long workSpaceId;
 }
 

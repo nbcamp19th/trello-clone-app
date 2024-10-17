@@ -66,15 +66,15 @@ public class CardQueryRepositoryImpl implements CardQueryRepository {
     }
 
     private BooleanExpression titleContains(String title) {
-        return title != null ? card.title.containsIgnoreCase(title) : null;
+        return title != null ? card.title.startsWith(title) : null;
     }
 
     private BooleanExpression contentsContains(String contents) {
-        return contents != null ? card.contents.containsIgnoreCase(contents) : null;
+        return contents != null ? card.contents.startsWith(contents) : null;
     }
 
     private BooleanExpression managerNicknameContains(String managerName) {
-        return managerName != null ? user.name.containsIgnoreCase(managerName) : null;
+        return managerName != null ? user.name.startsWith(managerName) : null;
     }
 
     private BooleanExpression dueDateBetween(LocalDateTime dueDateFrom, LocalDateTime dueDateTo) {
