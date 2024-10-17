@@ -1,13 +1,16 @@
 package com.sparta.trelloproject.domain.workspace.entity;
 
 import com.sparta.trelloproject.common.entity.Timestamped;
+import com.sparta.trelloproject.domain.board.entity.Board;
 import com.sparta.trelloproject.domain.user.entity.User;
-import com.sparta.trelloproject.domain.user.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.List;
 
 @NoArgsConstructor
 @Entity
@@ -30,6 +33,13 @@ public class Workspace extends Timestamped {
     @NotNull
     private String workspaceDescription;
 
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "workspace" , orphanRemoval = true)
+    private List<UserWorkspace> userWorkspaces;
+
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "workspace" , orphanRemoval = true)
+    private List<Board> boards;
 
     private Workspace(String workspaceName, String workspaceDescription , User user) {
         this.workspaceName = workspaceName;
