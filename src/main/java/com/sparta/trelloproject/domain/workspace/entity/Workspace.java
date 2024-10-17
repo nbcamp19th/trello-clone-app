@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.List;
 
@@ -31,10 +33,12 @@ public class Workspace extends Timestamped {
     @NotNull
     private String workspaceDescription;
 
-    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL , orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "workspace" , orphanRemoval = true)
     private List<UserWorkspace> userWorkspaces;
 
-    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL , orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "workspace" , orphanRemoval = true)
     private List<Board> boards;
 
     private Workspace(String workspaceName, String workspaceDescription , User user) {
