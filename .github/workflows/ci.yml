@@ -10,8 +10,21 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    services:
+      redis:
+        image: redis:6.2
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd="redis-cli ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
+      - name: Clear CI
+        run: echo "해치웠나?"
+      
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -20,6 +33,13 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+
+      - name: Wait for Redis to be ready
+        run: |
+          until redis-cli -h localhost -p 6379 ping | grep PONG; do
+            echo "Waiting for Redis to start..."
+            sleep 5
+          done
 
       - name: Cache Gradle packages
         uses: actions/cache@v3
@@ -37,7 +57,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
-      - name: Run tests
+      - name: Run tests with H2 DB
         env:
           spring_profiles_active: test
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
