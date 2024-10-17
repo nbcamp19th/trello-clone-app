@@ -1,5 +1,6 @@
 package com.sparta.trelloproject.domain.user.entity;
 
+import com.sparta.trelloproject.common.entity.Timestamped;
 import com.sparta.trelloproject.domain.auth.dto.request.UserSignUpRequestDto;
 import com.sparta.trelloproject.domain.user.dto.request.UserAuthorityUpdateRequestDto;
 import com.sparta.trelloproject.domain.user.enums.UserRole;
@@ -13,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
