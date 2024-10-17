@@ -25,7 +25,7 @@ public class Lists {
     private String title;
 
     @NotNull
-    @Column(unique = true)
+    @Column
     private Integer sequence;
 
     @NotNull
