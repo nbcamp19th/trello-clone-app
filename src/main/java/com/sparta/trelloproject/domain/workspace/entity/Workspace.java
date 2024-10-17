@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @NoArgsConstructor
 @Entity
 @Table(name = "workspaces")
@@ -30,6 +32,8 @@ public class Workspace extends Timestamped {
     @NotNull
     private String workspaceDescription;
 
+    @OneToMany(mappedBy = "workspace" , cascade = CascadeType.REMOVE)
+    private List<UserWorkspace> userWorkspaces;
 
     private Workspace(String workspaceName, String workspaceDescription , User user) {
         this.workspaceName = workspaceName;

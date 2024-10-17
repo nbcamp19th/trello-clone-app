@@ -122,6 +122,10 @@ services:
         - SERVER_PORT=${SERVER_PORT}
     ports:
       - "${SERVER_PORT}:${SERVER_PORT}"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://${DB_LINK}:${DB_PORT}/${DB_NAME}?useSSL=false&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: ${DB_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD}
     networks:
       - trello-network
     depends_on:

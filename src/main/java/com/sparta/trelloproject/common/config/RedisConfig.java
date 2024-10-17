@@ -26,13 +26,6 @@ public class RedisConfig {
     @Value("${spring.data.redis.cluster.nodes}")
     private List<String> nodes;
 
-    @PostConstruct
-    public void test() {
-        for (String node : nodes) {
-            log.info("node : {}" , node);
-        }
-    }
-
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
