@@ -130,4 +130,17 @@ public class CardController {
         cardService.updateCardStatus(cardId, cardStatusRequestDto);
         return ResponseEntity.ok(SuccessResponse.of(null));
     }
+
+    /**
+     * 카드의 이미지를 삭제합니다.
+     *
+     * @param cardId 카드 아이디를 받아 이미지를 찾아서 삭제합니다
+     * @return 반환타입은
+     */
+    @DeleteMapping("/cards/{cardId}/images")
+    public ResponseEntity<SuccessResponse<String>> deleteCardImage(@PathVariable Long cardId) {
+        cardService.deleteCardImage(cardId);
+        return ResponseEntity.ok(SuccessResponse.of(null));
+    }
+
 }
