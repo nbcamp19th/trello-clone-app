@@ -33,8 +33,10 @@ public class RedissonLockAspect {
 
         // aop를 통한 해당 메소드의 파라미터 값 가져오기
         Object[] args = joinPoint.getArgs();
-        String str = args[0] == null ? "" : args[0].toString();
-        log.info(str);
+        String str = "";
+        if (!(args == null || args.length == 0)) {
+            str = args[0].toString();
+        }
 
         String lockKey = str + annotation.value();
 
