@@ -1,7 +1,6 @@
 package com.sparta.trelloproject.domain.workspace.service;
 
 import com.sparta.trelloproject.common.annotation.AuthUser;
-import com.sparta.trelloproject.common.annotation.RedissonLock;
 import com.sparta.trelloproject.common.exception.ForbiddenException;
 import com.sparta.trelloproject.common.exception.NotFoundException;
 import com.sparta.trelloproject.common.exception.ResponseCode;
@@ -74,7 +73,6 @@ public class WorkspaceService {
     }
 
     @Transactional
-    @RedissonLock("#workspace")
     public void removeWorkspace(AuthUser authUser ,Long workspaceId) {
         Workspace workspace = workspaceRepository.findByIdAndUserId(workspaceId , authUser.getUserId()).orElseThrow(() -> new NotFoundException(ResponseCode.NOT_FOUND_WORKSPACE));
         UserWorkspace userWorkspace = userWorkSpaceRepository.findByWorkspaceIdAndUserId(workspaceId , authUser.getUserId());
