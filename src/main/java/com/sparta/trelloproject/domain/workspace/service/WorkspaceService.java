@@ -4,6 +4,8 @@ import com.sparta.trelloproject.common.annotation.AuthUser;
 import com.sparta.trelloproject.common.exception.ForbiddenException;
 import com.sparta.trelloproject.common.exception.NotFoundException;
 import com.sparta.trelloproject.common.exception.ResponseCode;
+import com.sparta.trelloproject.domain.notification.event.InvitedWorkspaceEvent;
+import com.sparta.trelloproject.domain.notification.event.SavedCommentEvent;
 import com.sparta.trelloproject.domain.user.entity.User;
 import com.sparta.trelloproject.domain.user.repository.UserRepository;
 import com.sparta.trelloproject.domain.workspace.dto.WorkspaceInviteRequestDto;
@@ -15,6 +17,7 @@ import com.sparta.trelloproject.domain.workspace.enums.WorkSpaceUserRole;
 import com.sparta.trelloproject.domain.workspace.repository.UserWorkSpaceRepository;
 import com.sparta.trelloproject.domain.workspace.repository.WorkspaceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,7 @@ public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
     private final UserWorkSpaceRepository userWorkSpaceRepository;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public void addWorkspace(AuthUser authUser , WorkspaceRequestDto workSpaceRequestDto) {
@@ -53,6 +57,11 @@ public class WorkspaceService {
         UserWorkspace userWorkspace = UserWorkspace.from(workspace , user , WorkSpaceUserRole.of(workspaceInviteRequestDto.getWorkspaceUserRole()));
 
         userWorkSpaceRepository.save(userWorkspace);
+
+        /**
+         * 워크스페이스 초대 알림 전송 이벤트 발생
+         */
+        eventPublisher.publishEvent(new InvitedWorkspaceEvent(user.getId()));
     }
 
     public List<WorkspaceResponseDto> getWorkspaces(AuthUser authUser) {

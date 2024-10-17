@@ -41,3 +41,5 @@ cloud:
 logging:
   level:
     org.hibernate.orm.jdbc.bind: trace
+
+slackBotToken: ${SLACKBOT_TOKEN}

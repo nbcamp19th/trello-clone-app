@@ -13,10 +13,12 @@ import com.sparta.trelloproject.domain.card.entity.Card;
 import com.sparta.trelloproject.domain.card.entity.CardImage;
 import com.sparta.trelloproject.domain.card.repository.CardImageRepository;
 import com.sparta.trelloproject.domain.card.repository.CardRepository;
-import com.sparta.trelloproject.domain.comment.dto.response.UpdateCommentResponse;
+import com.sparta.trelloproject.domain.comment.dto.response.UpdateCommentResponseDto;
 import com.sparta.trelloproject.domain.comment.repository.CommentRepository;
 import com.sparta.trelloproject.domain.list.entity.Lists;
 import com.sparta.trelloproject.domain.list.repository.ListRepository;
+import com.sparta.trelloproject.domain.notification.event.SavedCommentEvent;
+import com.sparta.trelloproject.domain.notification.event.UpdatedCardEvent;
 import com.sparta.trelloproject.domain.workspace.entity.UserWorkspace;
 import com.sparta.trelloproject.domain.workspace.enums.WorkSpaceUserRole;
 import com.sparta.trelloproject.domain.workspace.repository.UserWorkSpaceRepository;
@@ -25,6 +27,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +46,7 @@ public class CardService {
     private final UserWorkSpaceRepository userWorkSpaceRepository;
     private final CardImageRepository cardImageRepository;
     private final CommentRepository commentRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public String saveCard(long userId, MultipartFile file, CardRequestDto cardRequestDto) {
         try {
@@ -86,6 +90,11 @@ public class CardService {
             String filePath = cardImage.getPath();
             card.update(cardRequestDto);
 
+            /**
+             * 카드 수정 알림 전송 이벤트 발생
+             */
+            eventPublisher.publishEvent(new UpdatedCardEvent(userId,cardId));
+
             String uploadImageUrl = s3Service.updateFile(file, card, filePath);
             return uploadImageUrl;
         }
@@ -107,8 +116,8 @@ public class CardService {
     public CardResponseDto getCard(Long id) {
         Card card = cardRepository.findByCardId(id);
 
-        List<UpdateCommentResponse> comments = commentRepository.findByCardId(id).stream()
-            .map(UpdateCommentResponse::from)
+        List<UpdateCommentResponseDto> comments = commentRepository.findByCardId(id).stream()
+            .map(UpdateCommentResponseDto::from)
             .collect(Collectors.toList());
 
         CardImage cardImage = cardImageRepository.findByCardId(id);

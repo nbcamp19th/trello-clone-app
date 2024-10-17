@@ -2,8 +2,8 @@ package com.sparta.trelloproject.domain.comment.entity;
 
 import com.sparta.trelloproject.common.entity.Timestamped;
 import com.sparta.trelloproject.domain.card.entity.Card;
-import com.sparta.trelloproject.domain.comment.dto.request.SaveCommentRequest;
-import com.sparta.trelloproject.domain.comment.dto.request.UpdateCommentRequest;
+import com.sparta.trelloproject.domain.comment.dto.request.SaveCommentRequestDto;
+import com.sparta.trelloproject.domain.comment.dto.request.UpdateCommentRequestDto;
 import com.sparta.trelloproject.domain.user.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,15 +40,15 @@ public class Comment extends Timestamped {
         this.user=user;
         this.card=card;
     }
-    public static Comment from(SaveCommentRequest saveCommentRequest,User user, Card card){
+    public static Comment from(SaveCommentRequestDto saveCommentRequestDto, User user, Card card){
         return new Comment(
-                saveCommentRequest.getContents(),
+                saveCommentRequestDto.getContents(),
                 user,
                 card
         );
     }
 
-    public void update(UpdateCommentRequest updateCommentRequest){
+    public void update(UpdateCommentRequestDto updateCommentRequest){
         this.contents=updateCommentRequest.getContents();
     }
 }
