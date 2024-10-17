@@ -1,30 +1,28 @@
 package com.sparta.trelloproject.common.config;
 
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
-import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisClusterConfiguration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisNode;
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import java.util.List;
-
 @Slf4j
 @Configuration
 public class RedisConfig {
 
-    @Value("${spring.data.redis.cluster.nodes}")
-    private List<String> nodes;
+    @Value("${spring.data.redis.host}")
+    private String host;
+
+    @Value("${spring.data.redis.port}")
+    private int port;
 
     @Bean
     public RedisTemplate<String, Object> redisTemplate() {
@@ -41,29 +39,18 @@ public class RedisConfig {
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        List<RedisNode> redisNodes = nodes.stream()
-                .map(node -> {
-                    String[] parts = node.split(":");
-                    return new RedisNode(parts[0], Integer.parseInt(parts[1]));
-                }).toList();
-        RedisClusterConfiguration redisClusterConfiguration = new RedisClusterConfiguration();
-        redisClusterConfiguration.setClusterNodes(redisNodes);
-        return new LettuceConnectionFactory(redisClusterConfiguration);
+        RedisStandaloneConfiguration redisConfiguration = new RedisStandaloneConfiguration();
+        redisConfiguration.setHostName(host);
+        redisConfiguration.setPort(port);
+        return new LettuceConnectionFactory(redisConfiguration);
     }
 
     @Bean
     public RedissonClient redissonClient() {
-        final Config config = new Config();
-
-        ClusterServersConfig csc = config.useClusterServers()
-                .setScanInterval(2000)
-                .setConnectTimeout(10000)
-                .setTimeout(10000)
-                .setRetryAttempts(3)
-                .setRetryInterval(1500);
-
-        nodes.forEach(node -> csc.addNodeAddress("redis://" + node));
-
+        Config config = new Config();
+        config.useSingleServer()
+                .setAddress("redis://" + host + ":" + port)
+                .setConnectionPoolSize(32);
         return Redisson.create(config);
     }
 }
