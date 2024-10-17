@@ -39,6 +39,7 @@ jobs:
 
       - name: Run tests
         env:
+          spring_profiles_active: test
           REDIS_HOST: ${{ secrets.REDIS_HOST }}
           REDIS_PORT: ${{ secrets.REDIS_PORT }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
