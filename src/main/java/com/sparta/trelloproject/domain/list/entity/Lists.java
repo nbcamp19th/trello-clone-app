@@ -1,11 +1,14 @@
 package com.sparta.trelloproject.domain.list.entity;
 
 import com.sparta.trelloproject.domain.board.entity.Board;
+import com.sparta.trelloproject.domain.card.entity.Card;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Table(name = "lists")
@@ -29,10 +32,17 @@ public class Lists {
     @JoinColumn(name = "boards_id")
     private Board board;
 
+    @OneToMany(mappedBy = "list", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Card> cards;
+
     private Lists(String title, Integer sequence, Board board) {
         this.title = title;
         this.sequence = sequence;
         this.board = board;
+    }
+
+    public List<Card> getCards() {
+        return cards;
     }
 
     public static Lists of(String title, int sequence, Board board) {

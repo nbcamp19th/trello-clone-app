@@ -89,4 +89,9 @@ public class Card extends Timestamped {
             cardStatusRequestDto.getCardStatus().toUpperCase());
         this.cardStatus = cardStatus;
     }
+
+    public Card(String title, Lists list) {
+        this.title = title;
+        this.list = list;
+    }
 }
