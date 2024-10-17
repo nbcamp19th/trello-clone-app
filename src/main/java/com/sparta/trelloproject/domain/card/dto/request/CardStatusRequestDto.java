@@ -1,6 +1,5 @@
 package com.sparta.trelloproject.domain.card.dto.request;
 
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,13 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CardRequestDto {
+public class CardStatusRequestDto {
 
-    private Long listId;
-    private String title;
-    private String contents;
-    private LocalDateTime dueDate;
-    private Long workSpaceId;
     private String cardStatus;
 }
 

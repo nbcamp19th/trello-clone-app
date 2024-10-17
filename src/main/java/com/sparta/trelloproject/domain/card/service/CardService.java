@@ -8,6 +8,7 @@ import com.sparta.trelloproject.domain.card.dto.reponse.CardImageResponseDto;
 import com.sparta.trelloproject.domain.card.dto.reponse.CardListResponseDto;
 import com.sparta.trelloproject.domain.card.dto.reponse.CardResponseDto;
 import com.sparta.trelloproject.domain.card.dto.request.CardRequestDto;
+import com.sparta.trelloproject.domain.card.dto.request.CardStatusRequestDto;
 import com.sparta.trelloproject.domain.card.entity.Card;
 import com.sparta.trelloproject.domain.card.entity.CardImage;
 import com.sparta.trelloproject.domain.card.repository.CardImageRepository;
@@ -125,4 +126,8 @@ public class CardService {
         cardRepository.delete(card);
     }
 
+    public void updateCardStatus(Long cardId, CardStatusRequestDto cardStatusRequestDto) {
+        Card card = cardRepository.findByCardId(cardId);
+        card.updateStatus(cardStatusRequestDto);
+    }
 }
