@@ -17,7 +17,7 @@ public class CardResponseDto {
     private CardImageResponseDto cardImage;
 
     private CardResponseDto(Long id, String title, String contents, LocalDateTime dueDate,
-                            List<UpdateCommentResponseDto> comments, CardImageResponseDto cardImage) {
+        List<UpdateCommentResponseDto> comments, CardImageResponseDto cardImage) {
         this.id = id;
         this.title = title;
         this.contents = contents;
@@ -35,6 +35,17 @@ public class CardResponseDto {
             card.getDueDate(),
             comments,
             cardImage
+        );
+    }
+
+    public static CardResponseDto of(Card card, List<UpdateCommentResponseDto> comments) {
+        return new CardResponseDto(
+            card.getId(),
+            card.getTitle(),
+            card.getContents(),
+            card.getDueDate(),
+            comments,
+            null
         );
     }
 }

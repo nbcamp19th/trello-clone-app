@@ -4,6 +4,7 @@ import com.sparta.trelloproject.common.annotation.AuthUser;
 import com.sparta.trelloproject.common.response.SuccessResponse;
 import com.sparta.trelloproject.domain.card.dto.reponse.CardListResponseDto;
 import com.sparta.trelloproject.domain.card.dto.reponse.CardResponseDto;
+import com.sparta.trelloproject.domain.card.dto.request.CardAuthRequestDto;
 import com.sparta.trelloproject.domain.card.dto.request.CardRequestDto;
 import com.sparta.trelloproject.domain.card.dto.request.CardStatusRequestDto;
 import com.sparta.trelloproject.domain.card.service.CardService;
@@ -89,7 +90,7 @@ public class CardController {
         @RequestParam(required = false) String manager,
         @RequestParam(name = "due-date-from", required = false) LocalDateTime dueDateFrom,
         @RequestParam(name = "due-date-to", required = false) LocalDateTime dueDateTo,
-        @RequestParam(defaultValue = "1") int page,
+        @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "10") int size) {
         return ResponseEntity.ok(SuccessResponse.of(
             cardService.getCardList(title, contents, manager, dueDateFrom, dueDateTo, page, size)));
@@ -101,9 +102,12 @@ public class CardController {
      * @param id card의 id를 검색합니다.
      * @return 카드의 내용과, 카드의 댓글, 카드의 이미지를 반환합니다.
      */
-    @GetMapping("/cards/{id}")
-    public ResponseEntity<SuccessResponse<CardResponseDto>> getCard(@PathVariable Long id) {
-        return ResponseEntity.ok(SuccessResponse.of(cardService.getCard(id)));
+    @GetMapping("/cards/{cardId}")
+    public ResponseEntity<SuccessResponse<CardResponseDto>> getCard(@PathVariable Long cardId,
+        @AuthenticationPrincipal AuthUser authUser,
+        @RequestBody CardAuthRequestDto cardAuthRequestDto) {
+        return ResponseEntity.ok(SuccessResponse.of(
+            cardService.getCard(cardId, authUser.getUserId(), cardAuthRequestDto)));
     }
 
     /**
@@ -112,9 +116,11 @@ public class CardController {
      * @param id 카드 id를 입력받습니다
      * @return
      */
-    @DeleteMapping("/cards/{id}")
-    public ResponseEntity<SuccessResponse<String>> deleteCard(@PathVariable Long id) {
-        cardService.deleteCard(id);
+    @DeleteMapping("/cards/{cardId}")
+    public ResponseEntity<SuccessResponse<String>> deleteCard(@PathVariable Long cardId,
+        @RequestBody CardAuthRequestDto cardAuthRequestDto,
+        @AuthenticationPrincipal AuthUser authUser) {
+        cardService.deleteCard(cardAuthRequestDto, cardId, authUser.getUserId());
         return ResponseEntity.ok(SuccessResponse.of(null));
     }
 
@@ -126,8 +132,9 @@ public class CardController {
      */
     @PatchMapping("/cards/{cardId}/status")
     public ResponseEntity<SuccessResponse<String>> updateCardStatus(@PathVariable Long cardId,
-        @RequestBody CardStatusRequestDto cardStatusRequestDto) {
-        cardService.updateCardStatus(cardId, cardStatusRequestDto);
+        @RequestBody CardStatusRequestDto cardStatusRequestDto,
+        @AuthenticationPrincipal AuthUser authUser) {
+        cardService.updateCardStatus(cardId, authUser.getUserId(), cardStatusRequestDto);
         return ResponseEntity.ok(SuccessResponse.of(null));
     }
 
@@ -138,8 +145,10 @@ public class CardController {
      * @return 반환타입은
      */
     @DeleteMapping("/cards/{cardId}/images")
-    public ResponseEntity<SuccessResponse<String>> deleteCardImage(@PathVariable Long cardId) {
-        cardService.deleteCardImage(cardId);
+    public ResponseEntity<SuccessResponse<String>> deleteCardImage(@PathVariable Long cardId,
+        @RequestBody CardAuthRequestDto cardAuthRequestDto,
+        @AuthenticationPrincipal AuthUser authUser) {
+        cardService.deleteCardImage(cardId, authUser.getUserId(), cardAuthRequestDto);
         return ResponseEntity.ok(SuccessResponse.of(null));
     }
 

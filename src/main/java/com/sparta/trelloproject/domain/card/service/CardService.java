@@ -1,13 +1,18 @@
 package com.sparta.trelloproject.domain.card.service;
 
+import static com.sparta.trelloproject.common.exception.ResponseCode.FORBIDDEN;
+import static com.sparta.trelloproject.common.exception.ResponseCode.NOT_FOUND_CARD;
+
 import com.sparta.trelloproject.common.annotation.RedissonLock;
 import com.sparta.trelloproject.common.exception.ForbiddenException;
 import com.sparta.trelloproject.common.exception.NotFoundException;
-import com.sparta.trelloproject.common.exception.ResponseCode;
 import com.sparta.trelloproject.common.s3.S3Service;
+import com.sparta.trelloproject.domain.card.dto.CardAuthorityDto;
 import com.sparta.trelloproject.domain.card.dto.reponse.CardImageResponseDto;
 import com.sparta.trelloproject.domain.card.dto.reponse.CardListResponseDto;
 import com.sparta.trelloproject.domain.card.dto.reponse.CardResponseDto;
+import com.sparta.trelloproject.domain.card.dto.request.CardAuthRequestDto;
+import com.sparta.trelloproject.domain.card.dto.request.CardImageRequestDto;
 import com.sparta.trelloproject.domain.card.dto.request.CardRequestDto;
 import com.sparta.trelloproject.domain.card.dto.request.CardStatusRequestDto;
 import com.sparta.trelloproject.domain.card.entity.Card;
@@ -16,14 +21,11 @@ import com.sparta.trelloproject.domain.card.repository.CardImageRepository;
 import com.sparta.trelloproject.domain.card.repository.CardRepository;
 import com.sparta.trelloproject.domain.comment.dto.response.UpdateCommentResponseDto;
 import com.sparta.trelloproject.domain.comment.repository.CommentRepository;
+import com.sparta.trelloproject.domain.list.dto.ListAuthorityDto;
 import com.sparta.trelloproject.domain.list.entity.Lists;
 import com.sparta.trelloproject.domain.list.repository.ListRepository;
-import com.sparta.trelloproject.domain.notification.event.SavedCommentEvent;
-import com.sparta.trelloproject.domain.notification.event.UpdatedCardEvent;
-import com.sparta.trelloproject.domain.workspace.entity.UserWorkspace;
 import com.sparta.trelloproject.domain.workspace.enums.WorkSpaceUserRole;
 import com.sparta.trelloproject.domain.workspace.repository.UserWorkSpaceRepository;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,58 +52,52 @@ public class CardService {
     private final ApplicationEventPublisher eventPublisher;
 
     public String saveCard(long userId, MultipartFile file, CardRequestDto cardRequestDto) {
-        try {
-            UserWorkspace userWorkspace = userWorkSpaceRepository.findByWorkspaceIdAndUserId(
-                cardRequestDto.getWorkSpaceId(), userId);
+        ListAuthorityDto listAuthorityDto = userWorkSpaceRepository.findByListId(
+            cardRequestDto.getWorkSpaceId(), userId, cardRequestDto.getListId());
 
-            if (userWorkspace == null || WorkSpaceUserRole.ROLE_READ_USER.equals(
-                userWorkspace.getWorkSpaceUserRole())) {
-                throw new ForbiddenException(ResponseCode.INVALID_UPLOAD);
-            }
-
-            Lists lists = listRepository.findById(cardRequestDto.getListId())
-                .orElseThrow(() -> new NotFoundException(ResponseCode.NOT_FOUND_LIST));
-
-            Card card = Card.from(cardRequestDto, lists);
-            cardRepository.save(card);
-
-            String uploadImageUrl = s3Service.uploadFile(file, card);
-
-            return uploadImageUrl;
+        if (listAuthorityDto.getWorkspaceAuthority().getSeq()
+            > WorkSpaceUserRole.ROLE_EDIT_USER.getSeq()) {
+            throw new ForbiddenException(FORBIDDEN);
         }
-        catch (IOException e) {
-            throw new ForbiddenException(ResponseCode.INVALID_UPLOAD);
-        }
+
+        Lists lists = listRepository.findByListId(cardRequestDto.getListId());
+
+        Card card = Card.from(cardRequestDto, lists);
+        cardRepository.save(card);
+
+        String uploadImageUrl = s3Service.uploadFile(file);
+
+        CardImageRequestDto cardImageDto = createCardImageDto(file, uploadImageUrl);
+        cardImageRepository.save(CardImage.of(cardImageDto, card));
+
+        return uploadImageUrl;
     }
 
     public String updateCard(MultipartFile file, CardRequestDto cardRequestDto, Long cardId,
         long userId) {
-        try {
-            UserWorkspace userWorkspace = userWorkSpaceRepository.findByWorkspaceIdAndUserId(
-                cardRequestDto.getWorkSpaceId(), userId);
 
-            if (userWorkspace == null || WorkSpaceUserRole.ROLE_READ_USER.equals(
-                userWorkspace.getWorkSpaceUserRole())) {
-                throw new ForbiddenException(ResponseCode.INVALID_UPLOAD);
-            }
+        validateUserAuthority(cardRequestDto.getWorkSpaceId(), userId, cardId);
 
-            Card card = cardRepository.findByCardId(cardId);
+        Card card = cardRepository.findByCardId(cardId);
+        CardImage cardImage = cardImageRepository.findByCardId(cardId);
+        String existingFilePath = cardImage != null ? cardImage.getPath() : null;
 
-            CardImage cardImage = cardImageRepository.findByCardId(cardId);
-            String filePath = cardImage.getPath();
-            card.update(cardRequestDto);
+        card.update(cardRequestDto);
 
-            /**
-             * 카드 수정 알림 전송 이벤트 발생
-             */
-            eventPublisher.publishEvent(new UpdatedCardEvent(userId,cardId));
+        String uploadImageUrl = s3Service.updateFile(file, existingFilePath);
 
-            String uploadImageUrl = s3Service.updateFile(file, card, filePath);
-            return uploadImageUrl;
+        CardImageRequestDto cardImageDto = createCardImageDto(file, uploadImageUrl);
+
+        /**
+         * 카드 수정 알림 전송 이벤트 발생
+         */
+//        eventPublisher.publishEvent(new UpdatedCardEvent(userId, cardId));
+        if (cardImage != null) {
+            cardImage.update(cardImageDto);
+        } else {
+            cardImageRepository.save(CardImage.of(cardImageDto, card));
         }
-        catch (IOException e) {
-            throw new ForbiddenException(ResponseCode.INVALID_UPLOAD);
-        }
+        return uploadImageUrl;
     }
 
     @Transactional(readOnly = true)
@@ -114,31 +110,69 @@ public class CardService {
     }
 
     @Transactional(readOnly = true)
-    public CardResponseDto getCard(Long id) {
-        Card card = cardRepository.findByCardId(id);
+    public CardResponseDto getCard(Long cardId, Long userId,
+        CardAuthRequestDto cardAuthRequestDto) {
+        validateUserAuthority(cardAuthRequestDto.getWorkSpaceId(), userId, cardId);
 
-        List<UpdateCommentResponseDto> comments = commentRepository.findByCardId(id).stream()
+        Card card = cardRepository.findByCardId(cardId);
+
+        List<UpdateCommentResponseDto> comments = commentRepository.findByCardId(cardId).stream()
             .map(UpdateCommentResponseDto::from)
             .collect(Collectors.toList());
 
-        CardImage cardImage = cardImageRepository.findByCardId(id);
+        CardImage cardImage = cardImageRepository.findByCardId(cardId);
 
-        CardImageResponseDto cardImageResponse = CardImageResponseDto.from(cardImage);
+        if (cardImage != null) {
+            CardImageResponseDto cardImageResponse = CardImageResponseDto.from(cardImage);
+            return CardResponseDto.of(card, comments, cardImageResponse);
+        }
 
-        CardResponseDto response = CardResponseDto.of(card, comments, cardImageResponse);
-        return response;
+        return CardResponseDto.of(card, comments);
     }
 
-    //삭제관련 회의이후 수정!
-    public void deleteCard(Long id) {
-        Card card = cardRepository.findByCardId(id);
+    public void deleteCard(CardAuthRequestDto cardAuthRequestDto, Long cardId, Long userId) {
+        validateUserAuthority(cardAuthRequestDto.getWorkSpaceId(), userId, cardId);
 
+        Card card = cardRepository.findByCardId(cardId);
         cardRepository.delete(card);
     }
 
     @RedissonLock("#update-card")
-    public void updateCardStatus(Long cardId, CardStatusRequestDto cardStatusRequestDto) {
+    public void updateCardStatus(Long cardId, Long userId,
+        CardStatusRequestDto cardStatusRequestDto) {
+        validateUserAuthority(cardStatusRequestDto.getWorkSpaceId(), userId, cardId);
         Card card = cardRepository.findByCardId(cardId);
         card.updateStatus(cardStatusRequestDto);
     }
+
+    public void deleteCardImage(Long cardId, Long userId, CardAuthRequestDto cardAuthRequestDto) {
+        validateUserAuthority(cardAuthRequestDto.getWorkSpaceId(), userId, cardId);
+        CardImage cardImage = cardImageRepository.findByCardId(cardId);
+        if (cardImage == null) {
+            throw new NotFoundException(NOT_FOUND_CARD);
+        }
+        s3Service.deleteFile(cardImage.getFileName());
+        cardImageRepository.delete(cardImage);
+    }
+
+    private CardImageRequestDto createCardImageDto(MultipartFile multipartFile, String url) {
+        String originalFileName = multipartFile.getOriginalFilename();
+        String originName = originalFileName.substring(0, originalFileName.lastIndexOf("."));
+        String extension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+        String fileName = url.substring(url.lastIndexOf("/") + 1);
+        return new CardImageRequestDto(url, fileName, originName, extension);
+    }
+
+    private CardAuthorityDto validateUserAuthority(long workspaceId, long userId, long cardId) {
+        CardAuthorityDto cardAuthorityDto = userWorkSpaceRepository.findByCardId(workspaceId,
+            userId, cardId);
+
+        if (cardAuthorityDto.getWorkspaceAuthority().getSeq()
+            > WorkSpaceUserRole.ROLE_EDIT_USER.getSeq()) {
+            throw new ForbiddenException(FORBIDDEN);
+        }
+
+        return cardAuthorityDto;
+    }
+
 }
