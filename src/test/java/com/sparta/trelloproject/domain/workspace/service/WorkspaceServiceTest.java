@@ -5,6 +5,7 @@ import com.sparta.trelloproject.common.exception.ForbiddenException;
 import com.sparta.trelloproject.common.exception.NotFoundException;
 import com.sparta.trelloproject.common.exception.ResponseCode;
 import com.sparta.trelloproject.domain.auth.dto.request.UserSignUpRequestDto;
+import com.sparta.trelloproject.domain.notification.event.InvitedWorkspaceEvent;
 import com.sparta.trelloproject.domain.user.entity.User;
 import com.sparta.trelloproject.domain.user.enums.UserRole;
 import com.sparta.trelloproject.domain.user.repository.UserRepository;
@@ -22,6 +23,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
@@ -42,6 +44,8 @@ class WorkspaceServiceTest {
     private UserWorkSpaceRepository userWorkSpaceRepository;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private WorkspaceService workspaceService;
@@ -114,6 +118,7 @@ class WorkspaceServiceTest {
         given(workspaceRepository.findById(anyLong())).willReturn(Optional.of(workspace));
         given(userWorkSpaceRepository.findByWorkspaceIdAndUserId(anyLong() , anyLong())).willReturn(verificationUserWorkspace);
         given(userWorkSpaceRepository.save(any())).willReturn(userWorkspace);
+        doNothing().when(eventPublisher).publishEvent(any(InvitedWorkspaceEvent.class));
 
         workspaceService.inviteMemberToWorkspace(authUser , workspaceInviteRequestDto);
 
