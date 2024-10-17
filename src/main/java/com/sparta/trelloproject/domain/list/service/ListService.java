@@ -28,7 +28,6 @@ import static com.sparta.trelloproject.common.exception.ResponseCode.INVALID_LIS
 @Service
 @Transactional
 @RequiredArgsConstructor
-// TODO [LIST] Query 호출 줄일것
 public class ListService {
     private final UserWorkSpaceRepository userWorkSpaceRepository;
     private final BoardRepository boardRepository;
@@ -55,7 +54,7 @@ public class ListService {
 
         Lists lists = listRepository.findByListId(listId);
 
-        if(Strings.isNotBlank(listUpdateRequestDto.getTitle())) {
+        if (Strings.isNotBlank(listUpdateRequestDto.getTitle())) {
             lists.updateListTitle(listUpdateRequestDto.getTitle());
         }
 
