@@ -60,7 +60,6 @@ public class NotificationEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void handleUpdateCardEvent(UpdatedCardEvent event){
-
         List<Manager> cardManagers=managerRepository.findManagersByCard_Id(event.getCardId());
         for (Manager cardManager : cardManagers) {
             if(!cardManager.getId().equals(event.getUserId())){
