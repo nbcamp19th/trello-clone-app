@@ -1,4 +1,4 @@
-package com.sparta.trelloproject.domain.data.user;
+package com.sparta.trelloproject.data.user;
 
 import com.sparta.trelloproject.domain.auth.dto.request.UserSignInRequestDto;
 import com.sparta.trelloproject.domain.auth.dto.request.UserSignUpRequestDto;
