@@ -253,7 +253,7 @@ ELK 스택과 Grafana를 사용하여 애플리케이션 로그 및 성능 모�
 #### 테스트 결과
 ![grafana.png](/images/grafana.png)
 
-![jmeter html.png](/images/jmeter html.png)
+![jmeterhtml.png](/images/jmeterhtml.png)
 
 ## 트러블슈팅
 <details>
