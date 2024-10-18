@@ -275,7 +275,7 @@ public RedissonClient redissonClient() {
 Github Actions의 CI를 통해 코드가 잘 돌아가는지 확인하고 머지할 수 있어서 좋았습니다.
 
 ### 나유화
-ㅇ[후에휴융헹휴ㅔㅇ휴ㅔㅇ
+ELK 및  Grafana를 통한 시스템 모니터링 방법을 습득할 수 있었습니다.
 
 ### 정지윤
 SSE 기반의 실시간 통신과 이벤트에 관한 내용을 알게 되었습니다.
