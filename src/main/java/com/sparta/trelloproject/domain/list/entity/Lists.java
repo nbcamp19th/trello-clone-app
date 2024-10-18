@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,7 @@ public class Lists {
     private String title;
 
     @NotNull
-    @Column(unique = true)
+    @Column
     private Integer sequence;
 
     @NotNull
@@ -39,6 +40,7 @@ public class Lists {
         this.title = title;
         this.sequence = sequence;
         this.board = board;
+        this.cards = new ArrayList<>();
     }
 
     public List<Card> getCards() {

@@ -5,7 +5,10 @@ import static com.sparta.trelloproject.domain.card.entity.QCard.card;
 import static com.sparta.trelloproject.domain.list.entity.QLists.lists;
 import static com.sparta.trelloproject.domain.workspace.entity.QUserWorkspace.userWorkspace;
 
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Wildcard;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.trelloproject.domain.board.dto.BoardAuthorityDto;
 import com.sparta.trelloproject.domain.card.dto.CardAuthorityDto;
@@ -54,7 +57,14 @@ public class UserWorkspaceQueryRepositoryImpl implements UserWorkspaceQueryRepos
                                         userWorkspace.workSpaceUserRole.as("workspaceAuthority"),
                                         lists.board.id.as("boardId"),
                                         lists.sequence.as("sequence"),
-                                        lists.title.as("title")
+                                        lists.title.as("title"),
+                                        ExpressionUtils.as(
+                                                JPAExpressions.select(Wildcard.count)
+                                                        .from(lists)
+                                                        .where(lists.board.id.eq(board.id))
+                                                        .groupBy(lists.board.id),
+                                                "listCount"
+                                        )
                                 )
                         )
                         .distinct()

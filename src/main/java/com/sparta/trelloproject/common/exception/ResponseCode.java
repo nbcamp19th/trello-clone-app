@@ -28,7 +28,7 @@ public enum ResponseCode {
 
     // 리스트
     NOT_FOUND_LIST("해당 리스트는 존재하지 않습니다."),
-
+    INVALID_LIST_SEQUENCE("순서는 리스트 개수보다 클 수 없습니다."),
 
     // 카드
     NOT_FOUND_CARD("해당 카드는 존재하지 않습니다."),
