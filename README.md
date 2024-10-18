@@ -213,7 +213,7 @@ public RedissonClient redissonClient() {
 
 팀원들과 협의한 결과, 제목과 내용의 복합 인덱스로만 구성하기로 결정. 그 결과, 최대 98%의 성능 개선이 이루어졌습니다.
 
-![index](https://github.com/user-attachments/assets/d43f346b-3f1e-4eb7-be7d-a2fda681216d)
+![index](https://github.com/user-attachments/assets/85c86438-84da-4e41-86e9-a0e68ba7866e)
 
 ### 알림
 워크 스페이스 초대, 댓글 저장, 카드 수정을 했을 때 SlackBot으로 알림을 확인할 수 있습니다
