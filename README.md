@@ -135,7 +135,7 @@ https://www.figma.com/design/qQXpAfUTnn0wtCwxr0giZ5/team19_%ED%94%8C%EB%9F%AC%EC
 
 ## 아키텍쳐
 
-### Redis Cluster Architecture
+### Redis Cluster Architecture - 황호진
 
 이 프로젝트에 사용된 Redis는 Cluster를 사용하여 **데이터 분산**, **고가용성**, **동시성 제어**를 구현하였습니다.
 Redis 클러스터는 여러 개의 노드로 구성되어 있으며, 각 노드는 서로 다른 데이터의 파티션을 저장합니다. 
@@ -194,7 +194,7 @@ public RedissonClient redissonClient() {
 ![7](https://github.com/user-attachments/assets/3d4920c0-3de5-4c7e-a4c4-07dec240ca40)
 ![4](https://github.com/user-attachments/assets/4d65ff0c-d5c1-437f-bc15-cb477d1b72e0)
 
-### 인덱싱
+### 인덱싱 - 조준호
 이 프로젝트에서는 검색 성능을 개선하기 위해 인덱스를 사용하였습니다.
 
 데이터가 저장될 때, 검색 속도를 높이기 위해 데이터의 일부를 미리 정해두는 구조를 인덱싱이라고 합니다. 
@@ -219,7 +219,7 @@ public RedissonClient redissonClient() {
 
 ![output (2)](https://github.com/user-attachments/assets/81d2d505-8951-4015-9165-813b59047a8b)
 
-### 알림
+### 알림 - 정지윤
 워크 스페이스 초대, 댓글 저장, 카드 수정을 했을 때 SlackBot으로 알림을 확인할 수 있습니다
 
 #### 주요 특징
@@ -228,7 +228,7 @@ public RedissonClient redissonClient() {
 - **SlackBot 연동**: SlackBotService와 연동하여 득정 알림을 Slack채널로 보낼 수 있도록 구성되어 있습니다.
  <br>  
 
-### ELK / Grafana
+### ELK / Grafana - 나유화
 ELK 스택과 Grafana를 사용하여 애플리케이션 로그 및 성능 모니터링 환경을 구성했습니다.
 - Elasticsearch: 데이터 인덱싱 및 검색을 담당. 7.17.3 버전을 사용하며, 싱글 노드로 실행됨.
 - Logstash: 로그를 수집하여 Elasticsearch로 전송하는 파이프라인. 병렬 처리 워커 수 및 배치 크기와 지연 시간을 설정하여 성능을 조정.
@@ -299,8 +299,6 @@ ELK 스택과 Grafana를 사용하여 애플리케이션 로그 및 성능 모�
   이또한 2번 에러와 덩달아 수정을 수없이 하면서 진행해보았고 도달한 결론은 Spring boot 도 같은 Docker compose에 올려서
   동일 Docker network에 두어야지 연결이 가능하다는 점이였습니다. 이를 통해 해결했습니다.</p>
 </details>
-
-
 
 
 성능 모니터링 및 부하 테스트
