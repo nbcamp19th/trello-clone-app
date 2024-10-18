@@ -2,7 +2,7 @@ version: "3.8"
 services:
   redis-node-1:
     env_file:
-      - .env
+      - ../.env
     image: redis:latest
     container_name: redis-node-1
     networks:
@@ -15,7 +15,7 @@ services:
 
   redis-node-2:
     env_file:
-      - .env
+      - ../.env
     image: redis:latest
     container_name: redis-node-2
     networks:
@@ -28,7 +28,7 @@ services:
 
   redis-node-3:
     env_file:
-      - .env
+      - ../.env
     image: redis:latest
     container_name: redis-node-3
     networks:
@@ -41,7 +41,7 @@ services:
 
   redis-node-4:
     env_file:
-      - .env
+      - ../.env
     image: redis:latest
     container_name: redis-node-4
     networks:
@@ -54,7 +54,7 @@ services:
 
   redis-node-5:
     env_file:
-      - .env
+      - ../.env
     image: redis:latest
     container_name: redis-node-5
     networks:
@@ -67,7 +67,7 @@ services:
 
   redis-node-6:
     env_file:
-      - .env
+      - ../.env
     image: redis:latest
     container_name: redis-node-6
     networks:
@@ -80,7 +80,7 @@ services:
 
   redis-cluster:
     env_file:
-      - .env
+      - ../.env
     image: redis:latest
     container_name: redis-cluster
     networks:
@@ -113,11 +113,11 @@ services:
 
   app:
     env_file:
-      - .env
+      - ../.env
     container_name: spring-app
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: ../Dockerfile
       args:
         - SERVER_PORT=${SERVER_PORT}
     ports:

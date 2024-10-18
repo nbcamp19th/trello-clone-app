@@ -190,10 +190,6 @@ public RedissonClient redissonClient() {
 ![7](https://github.com/user-attachments/assets/3d4920c0-3de5-4c7e-a4c4-07dec240ca40)
 ![4](https://github.com/user-attachments/assets/4d65ff0c-d5c1-437f-bc15-cb477d1b72e0)
 
-ELK
-S3
-SLACK 알림
-
 ### 인덱싱
 이 프로젝트에서는 검색 성능을 개선하기 위해 인덱스를 사용하였습니다.
 
@@ -218,9 +214,6 @@ SLACK 알림
 팀원들과 협의한 결과, 제목과 내용의 복합 인덱스로만 구성하기로 결정. 그 결과, 최대 98%의 성능 개선이 이루어졌습니다.
 
 ![index](https://github.com/user-attachments/assets/d43f346b-3f1e-4eb7-be7d-a2fda681216d)
-
-Redis
-
 
 ### 알림
 워크 스페이스 초대, 댓글 저장, 카드 수정을 했을 때 SlackBot으로 알림을 확인할 수 있습니다
@@ -258,6 +251,22 @@ Redis
   이벤트 리스너에서 트랜잭션 관리가 제대로 이루어 지지 않으면, 댓글 저장 로직과 알림 전송 로직이 별도로 처리되어 문제가 발생할 수 있습니다.<br>
   따라서 `@EventListener`가 아니라 `@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)`로 변경하여 트랜잭션이 
   성공적으로 커밋 된 후 이벤트가 발생하도록 하여 해결하였습니다.</p>
+</details>
+
+<details>
+  <summary>황호진</summary>
+  <p>1. 로컬호스트에 Redis Cluster 구현 후 Spring boot에 적용시 에러</p>
+  <p>에러명 : Error creating bean with name 'redissonClient' defined in class path resource<br>
+  일반적인 RedisConfig 설정과는 다른 점이 있었고 Redis Cluster 용 설정하는 방법이 있었습니다. 그방법을 적용하여 해결했습니다.</p>
+
+  <p>2. Redis Cluster 구축된거 Docker로 이관 작업시 에러</p>
+  <p>클러스터가 제대로 생성안되는 에러가 발생했습니다.<br>
+  이유가 뭔지 찾아가면서 도커 네트워크 ,Redis.conf을 수정하면서 Docker에 Redis Cluster에 구축에 성공하였습니다.</p>
+
+  <p>3. Docker에 구축된 Redis Cluster를 Spring boot에 연결하는 작업에 에러</p>
+  <p>Spring boot에서 redis cluster에 연결이 안되는 에러가 발생하였습니다.<br>
+  이또한 2번 에러와 덩달아 수정을 수없이 하면서 진행해보았고 도달한 결론은 Spring boot 도 같은 Docker compose에 올려서
+  동일 Docker network에 두어야지 연결이 가능하다는 점이였습니다. 이를 통해 해결했습니다.</p>
 </details>
 
 ## 📑 프로젝트 후기
