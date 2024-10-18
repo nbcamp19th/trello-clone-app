@@ -21,6 +21,10 @@
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
 ![YAML](https://img.shields.io/badge/yaml-%23ffffff.svg?style=for-the-badge&logo=yaml&logoColor=151515)
 ![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white)
+[![Prometheus](https://img.shields.io/badge/prometheus-E6522C.svg?style=for-the-badge&logo=prometheus&logoColor=white)](https://prometheus.io/)
+[![Elasticsearch](https://img.shields.io/badge/elasticsearch-005571.svg?style=for-the-badge&logo=elasticsearch&logoColor=white)](https://www.elastic.co/elasticsearch/)
+[![Kibana](https://img.shields.io/badge/kibana-005571.svg?style=for-the-badge&logo=kibana&logoColor=white)](https://www.elastic.co/kibana/)
+[![Grafana](https://img.shields.io/badge/grafana-F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)](https://grafana.com/)
 
 ### 🎛️ 환경
 ![IntelliJ IDEA](https://img.shields.io/badge/IntelliJIDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white)
@@ -224,6 +228,33 @@ public RedissonClient redissonClient() {
 - **SlackBot 연동**: SlackBotService와 연동하여 득정 알림을 Slack채널로 보낼 수 있도록 구성되어 있습니다.
  <br>  
 
+### ELK / Grafana
+ELK 스택과 Grafana를 사용하여 애플리케이션 로그 및 성능 모니터링 환경을 구성했습니다.
+- Elasticsearch: 데이터 인덱싱 및 검색을 담당. 7.17.3 버전을 사용하며, 싱글 노드로 실행됨.
+- Logstash: 로그를 수집하여 Elasticsearch로 전송하는 파이프라인. 병렬 처리 워커 수 및 배치 크기와 지연 시간을 설정하여 성능을 조정.
+- Kibana: Elasticsearch 데이터를 시각화하기 위한 대시보드. 5601 포트를 통해 접근 가능.
+- Prometheus/Grafana: 시스템 및 애플리케이션 성능을 모니터링.
+
+#### Kibana 로그 모니터링
+![log.png](/images/log.png)
+
+#### 부하 테스트
+- 애플리케이션의 성능 및 안정성을 검증하기 위해 여러 개의 시나리오로 성능 테스트를 진행했습니다. 
+- 주요 목표는 애플리케이션이 다양한 요청 수에 대해 일정한 성능을 유지할 수 있는지, 오류가 발생하지 않는지 확인하는 것입니다.
+
+#### 테스트 환경 시나리오
+
+| 요청 항목          | 요청 수  | 테스트 종류             | 측정 항목                    |
+|-------------------|---------|-----------------------|-----------------------------|
+| 회원가입 요청 1    | 1,000회 | 회원가입 처리 성능 테스트 | 최대 응답 시간, 평균 응답 시간, 오류율 |
+| 회원가입 요청 2    | 3,000회 | 회원가입 처리 성능 테스트 | 최대 응답 시간, 평균 응답 시간, 오류율 |
+| 회원가입 요청 3    | 5,000회 | 회원가입 처리 성능 테스트 | 최대 응답 시간, 평균 응답 시간, 오류율 |
+
+#### 테스트 결과
+![grafana.png](/images/grafana.png)
+
+![jmeter html.png](/images/jmeter html.png)
+
 ## 트러블슈팅
 <details>
   <summary>조준호</summary>
@@ -269,6 +300,11 @@ public RedissonClient redissonClient() {
   동일 Docker network에 두어야지 연결이 가능하다는 점이였습니다. 이를 통해 해결했습니다.</p>
 </details>
 
+
+
+
+성능 모니터링 및 부하 테스트
+
 ## 📑 프로젝트 후기
 
 ### 김나람
@@ -276,6 +312,7 @@ Github Actions의 CI를 통해 코드가 잘 돌아가는지 확인하고 머지
 
 ### 나유화
 ELK 및  Grafana를 통한 시스템 모니터링 방법을 습득할 수 있었습니다.
+
 
 ### 정지윤
 SSE 기반의 실시간 통신과 이벤트에 관한 내용을 알게 되었습니다.
