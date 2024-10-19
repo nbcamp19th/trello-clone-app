@@ -7,7 +7,6 @@
 * 24.10.14 - 24.10.17
 
 ## 📚 기술 스택
-### 📋 Languages
 
 ### 💻 Developers
 ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
